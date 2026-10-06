@@ -65,11 +65,14 @@ def test_articulo_usa_ultima_version_divide_apartados_y_linealiza_tablas():
 
 def test_itc_secciones_desde_indice_y_filas_de_tabla_no_son_encabezados():
     frags = ingest.parse_itc(ITC, "BOE-A-TEST", "Norma test")
-    assert [f["apartado"] for f in frags] == ["1", "2", "2.1"]
+    # "2. REDES" es casi solo un encabezado: se fusiona con su primera subsección 2.1
+    assert [f["apartado"] for f in frags] == ["1", "2.1"]
     assert frags[0]["articulo"] == "ITC-BT-09"
-    assert frags[0]["titulo"] == "CAMPO DE APLICACIÓN"
-    assert "2 m, salvo" in frags[1]["texto"]
-    assert "3 | 4,5" in frags[2]["texto"]
+    assert frags[0]["titulo"] == "Instalaciones de alumbrado exterior · Campo de aplicación"
+    assert frags[1]["titulo"] == "Instalaciones de alumbrado exterior · Cables"
+    assert frags[1]["texto"].startswith("2. REDES.")
+    assert "2 m, salvo" in frags[1]["texto"]  # no se tomó como encabezado
+    assert "3 | 4,5" in frags[1]["texto"]  # fila de tabla linealizada
 
 
 def test_indice_filtra_articulos_e_itc():
@@ -93,9 +96,9 @@ def test_construir_desde_xml_crudo(tmp_path):
     (raw / "a3.xml").write_text(ARTICULO, encoding="utf-8")
     (raw / "ib-9.xml").write_text(ITC, encoding="utf-8")
     salida = tmp_path / "corpus.json"
-    assert ingest.construir("BOE-A-TEST", "Norma", raw, salida, incluir_itc=True) == 5
+    assert ingest.construir("BOE-A-TEST", "Norma", raw, salida, incluir_itc=True) == 4
     data = json.loads(salida.read_text(encoding="utf-8"))
-    assert len({f["id"] for f in data["fragmentos"]}) == 5  # ids únicos
+    assert len({f["id"] for f in data["fragmentos"]}) == 4  # ids únicos
 
 
 def test_corpus_real_es_coherente():

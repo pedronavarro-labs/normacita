@@ -215,7 +215,42 @@ def parse_itc(xml: str, id_norma: str, norma: str) -> list[dict[str, str]]:
             actual = seccion
             titulos[seccion] = texto[len(m.group(1)) :].strip(". ") if m else seccion
         secciones.setdefault(actual, []).append(texto)
-    return _fragmentos(id_norma, norma, bloque_id, itc, secciones, titulos, titulo_itc)
+
+    # El título de cada fragmento incluye el de la ITC ("Derivaciones individuales ·
+    # Definición"): así una sección llamada solo "DEFINICIÓN" sigue siendo localizable.
+    def _bonito(t: str) -> str:
+        return t.capitalize() if t.isupper() else t
+
+    general = _bonito(titulo_itc)
+    titulos_completos = {
+        k: f"{general} · {_bonito(v)}" if v != general else general for k, v in titulos.items()
+    }
+    return _fragmentos(
+        id_norma,
+        norma,
+        bloque_id,
+        itc,
+        _fusionar_encabezados(secciones),
+        titulos_completos,
+        general,
+    )
+
+
+def _fusionar_encabezados(secciones: dict[str, list[str]]) -> dict[str, list[str]]:
+    """Une una sección casi vacía (solo el encabezado, p. ej. "2. CIRCUITOS INTERIORES")
+    con su primera subsección ("2.1 …"), para no generar fragmentos sin contenido."""
+    claves = list(secciones)
+    salida: dict[str, list[str]] = {}
+    pendiente: list[str] = []
+    for i, sec in enumerate(claves):
+        partes = pendiente + secciones[sec]
+        pendiente = []
+        siguiente = claves[i + 1] if i + 1 < len(claves) else ""
+        if len(" ".join(secciones[sec])) < 200 and siguiente.startswith(f"{sec}."):
+            pendiente = partes  # se antepone a la subsección siguiente
+            continue
+        salida[sec] = partes
+    return salida
 
 
 def parse_indice(xml: str, incluir_itc: bool = True) -> list[str]:
