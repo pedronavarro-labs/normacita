@@ -1,0 +1,37 @@
+name: Ingesta BOE (manual)
+
+# Ejecuta scripts/ingest_boe.py en GitHub Actions y publica el corpus como artefacto.
+# Útil si tu red no llega a boe.es. No modifica el repositorio: descarga el artefacto,
+# revísalo y haz commit tú.
+on:
+  workflow_dispatch:
+    inputs:
+      id_norma:
+        description: "Identificador BOE"
+        default: "BOE-A-2002-18099"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  ingesta:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install httpx
+      - name: Descargar XML oficial y construir corpus
+        run: |
+          python scripts/ingest_boe.py todo --id "${{ inputs.id_norma }}" \
+            --raw data/raw/boe --salida data/corpus/corpus-boe.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: corpus-boe
+          path: |
+            data/raw/boe/
+            data/corpus/corpus-boe.json
+          retention-days: 7
