@@ -132,7 +132,7 @@ def a_pdf(md_tmp: Path, salida: Path) -> None:
         pg.add_style_tag(content="header#title-block-header { display: none; }")
         pie = (
             '<div style="font-size:8px;width:100%;text-align:center;color:#4a5568">'
-            "NormaCita · Memoria (BORRADOR) · "
+            "NormaCita · Memoria del TFM · "
             '<span class="pageNumber"></span>/<span class="totalPages"></span></div>'
         )
         margen = {lado: "1.6cm" for lado in ("top", "bottom", "left", "right")}
@@ -162,14 +162,14 @@ def main() -> None:
     tmp = Path(tempfile.mkdtemp()) / "MEMORIA.md"
     tmp.write_text(md, encoding="utf-8")
 
-    docx = args.salida / "NormaCita-MEMORIA-BORRADOR.docx"
+    docx = args.salida / "NormaCita-MEMORIA.docx"
     cmd = ["pandoc", str(tmp), "-f", "markdown+gfm_auto_identifiers", "--resource-path", str(DOCS),
            "-o", str(docx)]  # fmt: skip
     subprocess.run(cmd, check=True)  # noqa: S603
     estilizar_docx(docx)
     print(docx)
     if args.pdf:
-        pdf = args.salida / "NormaCita-MEMORIA-BORRADOR.pdf"
+        pdf = args.salida / "NormaCita-MEMORIA.pdf"
         a_pdf(tmp, pdf)
         print(pdf)
 

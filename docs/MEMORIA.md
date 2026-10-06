@@ -1,6 +1,6 @@
-# NormaCita · Memoria del Trabajo Fin de Máster — BORRADOR
+# NormaCita · Memoria del Trabajo Fin de Máster
 
-> ✏️ **BORRADOR para que Pedro lo haga suyo.** Documento **opcional**: el PDF oficial no exige memoria, y en el máster se insiste en que «la defensa es el README y las slides». Está redactado en primera persona; **revísalo y reescríbelo con tus palabras**. Los huecos `[PENDIENTE: …]` solo los puedes completar tú.
+> Documento complementario: el PDF oficial no exige memoria y la defensa del proyecto son el README y las slides. Redactado en primera persona con ayuda de un asistente de IA a partir de la documentación y el historial del repositorio (ver `docs/REGISTRO-IA.md`).
 > Todos los datos y métricas salen del repositorio a fecha de 06/10/2026 (`README.md`, `docs/`, `tests/`, `.github/workflows/`). Si cambian, actualiza esta memoria.
 > Este documento se regenera en `.docx` (y PDF opcional) con `scripts/generar_memoria.py`, que convierte los diagramas Mermaid en imágenes.
 
@@ -9,11 +9,11 @@
 | **Título** | NormaCita: asistente de normativa técnica con citas verificables (REBT) |
 | **Autor** | Pedro Navarro Arocha |
 | **Máster** | Máster en Desarrollo con IA · The Big School (3.ª edición) |
-| **Fecha** | 06/10/2026 (borrador) |
+| **Fecha** | Octubre de 2026 |
 | **Repositorio** | https://github.com/pedronavarro-labs/normacita |
-| **Demo desplegada** | [PENDIENTE: URL de Render] |
-| **Slides** | [PENDIENTE: URL pública de las slides] |
-| **Vídeo** | [PENDIENTE: URL pública del vídeo] |
+| **Demo desplegada** | {{URL_DEMO}} |
+| **Slides** | {{URL_SLIDES}} |
+| **Vídeo** | {{URL_VIDEO}} |
 
 ## Resumen
 
@@ -47,7 +47,7 @@ Quienes trabajan con normativa técnica (instaladores, ingenieros, técnicos, es
 
 Elegí esta idea entre cinco candidatas con una tabla de criterios ponderados (originalidad, viabilidad en unas cuatro semanas, despliegue gratuito, valor medible de la IA, arquitectura, testabilidad, seguridad, CI/CD y encaje con mi perfil). Obtuvo la mayor puntuación (90 sobre 100; detalle en `DECISION.md` de la carpeta del TFM). Lo que más pesó es que **la IA aporta un valor que se puede medir** (la precisión de la cita) y que el «no respondo sin fuente» es una funcionalidad diferencial.
 
-[PENDIENTE: tu motivación personal: relación con tu trabajo o formación, alguna situación real buscando un requisito en el REBT.]
+Mi motivación viene de mi perfil de ingeniería. Sé lo que cuesta localizar, dentro de una norma técnica larga, el artículo o apartado exacto que respalda un requisito, y que esa referencia es la que hace falta para justificar una decisión. Quería una herramienta que ahorrase ese tiempo sin perder rigor: que no solo respondiera, sino que enseñara de dónde sale cada respuesta y que reconociera cuándo la norma no dice nada.
 
 ## 2. Objetivos
 
@@ -360,7 +360,7 @@ flowchart LR
 - **Despliegue**: `render.yaml` (Blueprint) con un servicio web Docker en plan gratuito, health check `/health`, `LLM_PROVIDER=fake` por defecto y variables secretas con `sync: false`, que se rellenan en el panel. `DEPLOY.md` documenta paso a paso Render, la alternativa Fly.io (sin plan gratuito para cuentas nuevas) y cómo obtener una clave gratuita de Gemini, Groq u OpenRouter.
 - Limitaciones: la instancia gratuita de Render se duerme tras unos 15 min sin tráfico, y el rate limit en memoria se reinicia en cada despliegue.
 
-[PENDIENTE: URL de la demo una vez desplegada y, si se activa, el LLM elegido.]
+La demo pública está en {{URL_DEMO}}. Funciona en modo demo (proveedor *fake*: respuestas extractivas con sus citas). El proveedor compatible con OpenAI está implementado y se activa con variables de entorno, pero todavía no lo he probado en producción.
 
 ## 10. Uso de IA en el desarrollo
 
@@ -370,7 +370,7 @@ He usado un asistente de IA (Grok Bot) durante el desarrollo y lo he registrado 
 - los ADR y el *walking skeleton* (API, BM25, proveedores, UI, tests, Docker y CI);
 - la ingesta completa desde el BOE (vía GitHub Actions);
 - el conjunto de evaluación y la mejora medida del BM25;
-- la preparación del despliegue, la mejora de la interfaz y los borradores de presentación.
+- la preparación del despliegue, la mejora de la interfaz, los guiones y el deck de la presentación, esta memoria y el vídeo de entrega (con voz sintética).
 
 Lo que funcionó para controlar el trabajo del asistente:
 
@@ -378,7 +378,14 @@ Lo que funcionó para controlar el trabajo del asistente:
 - **Citas esperadas verificadas contra el texto real**, con un test que lo comprueba.
 - **Reglas para agentes** en `AGENTS.md` y decisiones en ADR.
 
-[PENDIENTE: qué partes revisaste y entendiste a fondo, qué cambiaste tú, dónde se equivocó la IA y cómo lo detectaste. Recuerda que debes poder explicar todo el código.]
+**Mi papel.** Elegí y validé la idea entre las candidatas, revisé el alcance y las decisiones de arquitectura (ADR) y validé el trabajo del asistente con tests, el CI y la evaluación, en lugar de dar nada por bueno sin comprobarlo. El código lo generó el asistente; mi responsabilidad es entenderlo y poder explicarlo, y por eso la documentación (ADR, evaluación y registro de IA) forma parte del entregable.
+
+**Problemas reales que aparecieron y cómo se detectaron:**
+
+- **Recuperación del artículo 2.** Con la muestra inicial del corpus, a «¿A qué instalaciones se aplica?» el apartado 2.4 (exclusiones) salía antes que el 2.1 (ámbito), y con el corpus completo ningún apartado del artículo 2 entraba en el top 3. Lo destapó la evaluación. Se corrigió con stemming, el campo título y la penalización de las cláusulas de exclusión, y los dos sentidos de la pregunta tienen test de regresión.
+- **El BOE no era accesible desde el entorno del asistente.** La descarga se llevó a un workflow manual de GitHub Actions, y el XML oficial se versiona en el repositorio para poder reconstruir y auditar el corpus sin red.
+- **Sobreajuste y honestidad de la evaluación.** El prior ×1,5 no empeoraba el subconjunto de ajuste, pero bajaba el hit@1 de validación a 0,333. Se eligió ×1,2 y quedó documentado que esa elección miró la validación, así que el 0,50 de hit@1 en validación no es una medida totalmente ciega.
+- **Conjunto de validación pequeño.** Son 12 preguntas con cita, y cada una pesa unos 8 puntos. Lo trato como una señal, no como una cifra definitiva.
 
 ## 11. Resultados y limitaciones
 
@@ -408,7 +415,7 @@ Lo que funcionó para controlar el trabajo del asistente:
 - Un «no tengo base en la norma» bien diseñado es una funcionalidad, no un fallo: reduce el riesgo de desinformación y el coste.
 - La arquitectura hexagonal y el proveedor *fake* permitieron tener tests deterministas y CI sin secretos desde el primer día.
 
-[PENDIENTE: tus conclusiones personales y lo que más has aprendido en el máster aplicado a este proyecto.]
+A nivel personal, lo que más me llevo del máster aplicado a este proyecto es una forma de trabajar con IA: especificar primero, dejar las decisiones por escrito y no dar nada por bueno hasta que lo confirman los tests y la evaluación. El asistente acelera mucho la escritura de código, pero el criterio sobre qué medir, qué aceptar y qué contar con honestidad tiene que ser mío.
 
 **Trabajo futuro** (ver `docs/ROADMAP.md`):
 
@@ -474,4 +481,6 @@ Con un LLM real: `LLM_PROVIDER=openai_compatible`, `LLM_BASE_URL`, `LLM_API_KEY`
 | Despliegue | https://github.com/pedronavarro-labs/normacita/blob/main/DEPLOY.md |
 | Registro de uso de IA | https://github.com/pedronavarro-labs/normacita/blob/main/docs/REGISTRO-IA.md |
 | Fuente oficial (REBT consolidado) | https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099 |
-| Demo / slides / vídeo | [PENDIENTE] |
+| Demo | {{URL_DEMO}} |
+| Slides | {{URL_SLIDES}} |
+| Vídeo | {{URL_VIDEO}} |

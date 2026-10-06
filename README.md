@@ -5,11 +5,11 @@
 
 | Enlace | URL |
 |---|---|
-| 🌐 Demo desplegada | `PENDIENTE — https://…` (pasos en [DEPLOY.md](DEPLOY.md)) |
-| 📊 Slides (públicas) | `PENDIENTE — https://…` (borrador: [guion](docs/presentacion/GUION-SLIDES.md) · [.pptx](docs/presentacion/NormaCita-slides-BORRADOR.pptx)) |
-| 🎬 Vídeo de presentación | `PENDIENTE — https://…` (borrador del [guion](docs/presentacion/GUION-VIDEO.md)) |
+| 🌐 Demo desplegada | {{URL_DEMO}} (pasos en [DEPLOY.md](DEPLOY.md)) |
+| 📊 Slides (públicas) | {{URL_SLIDES}} ([guion](docs/presentacion/GUION-SLIDES.md) · [.pptx](docs/presentacion/NormaCita-slides.pptx)) |
+| 🎬 Vídeo de presentación | {{URL_VIDEO}} ([guion](docs/presentacion/GUION-VIDEO.md)) |
 | 💻 Repositorio | https://github.com/pedronavarro-labs/normacita |
-| 📄 Memoria (opcional, borrador) | [docs/MEMORIA.md](docs/MEMORIA.md) |
+| 📄 Memoria (opcional) | [docs/MEMORIA.md](docs/MEMORIA.md) |
 
 ## a. Descripción general
 Quienes trabajan con normativa técnica pierden tiempo buscando **qué artículo exacto** regula algo, y los chats de IA genéricos responden sin citar o inventan artículos. **NormaCita** responde preguntas en lenguaje natural **siempre con citas numeradas** al artículo y apartado del texto consolidado del BOE, con el fragmento literal y su enlace. Si el corpus no cubre la pregunta, **lo dice y no responde**.

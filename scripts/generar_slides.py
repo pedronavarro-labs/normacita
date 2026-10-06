@@ -1,4 +1,4 @@
-"""Genera el borrador de slides (.pptx) a partir de docs/presentacion/GUION-SLIDES.md.
+"""Genera las slides (.pptx) a partir de docs/presentacion/GUION-SLIDES.md.
 
 Uso:  pip install python-pptx  &&  python scripts/generar_slides.py
 El .pptx se puede importar en Google Slides (subirlo a Drive y abrirlo como Presentaciones).
@@ -18,7 +18,7 @@ from pptx.util import Inches, Pt
 
 ROOT = Path(__file__).resolve().parents[1]
 GUION = ROOT / "docs/presentacion/GUION-SLIDES.md"
-SALIDA = ROOT / "docs/presentacion/NormaCita-slides-BORRADOR.pptx"
+SALIDA = ROOT / "docs/presentacion/NormaCita-slides.pptx"
 IMG = ROOT / "docs/img"
 
 AZUL = RGBColor(0x1D, 0x4E, 0xD8)
@@ -122,7 +122,7 @@ def base(prs, datos, n, total):
     barra.fill.fore_color.rgb = AZUL
     barra.line.fill.background()
     caja(s, Inches(0.6), Inches(0.35), Inches(12), Inches(0.9), datos["titulo"], 34, TEXTO, True)
-    pie = f"NormaCita · Pedro Navarro Arocha · BORRADOR · {n}/{total}"
+    pie = f"NormaCita · Pedro Navarro Arocha · TFM Máster en Desarrollo con IA · {n}/{total}"
     caja(s, Inches(0.6), Inches(6.95), Inches(12), Inches(0.4), pie, 11, GRIS)
     s.notes_slide.notes_text_frame.text = datos["notas"]
     return s
@@ -163,10 +163,6 @@ def portada(prs, d, total):
     )
     caja(s, Inches(0.8), Inches(4.3), Inches(6.0), Inches(1.0), d["bullets"][1], 18, AZUL_SUAVE)
     caja(s, Inches(0.8), Inches(5.9), Inches(6.2), Inches(0.9), d["bullets"][2], 14, AZUL_SUAVE)
-    badge = forma(
-        s, Inches(0.8), Inches(0.45), Inches(1.6), Inches(0.42), "BORRADOR", AMBAR_SUAVE, AMBAR
-    )
-    _texto(badge.text_frame, "BORRADOR", 12, RGBColor(0x7A, 0x4D, 0x00), True, PP_ALIGN.CENTER)
     imagen(s, "01-inicio.png", Inches(7.3), Inches(1.0), w=Inches(5.6), borde=False)
     s.notes_slide.notes_text_frame.text = d["notas"]
 

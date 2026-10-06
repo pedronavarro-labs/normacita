@@ -1,8 +1,8 @@
-# Guion de slides · NormaCita — BORRADOR
+# Guion de slides · NormaCita
 
-> ✏️ **BORRADOR para que Pedro lo haga suyo.** Escrito en primera persona como si lo contara Pedro, pero **revísalo y cámbialo con tus palabras**: lo que pone `[PENDIENTE: …]` solo lo puedes rellenar tú.
+> Guion y notas del orador de la presentación, en primera persona. Redactado con ayuda de un asistente de IA a partir de la documentación y el historial del repositorio (ver [`docs/REGISTRO-IA.md`](../REGISTRO-IA.md)).
 > Datos y métricas sacados del repositorio (06/10/2026): `docs/EVALUACION.md`, `README.md`, `.github/workflows/`, `tests/`. Si cambian, actualiza las slides.
-> Deck generado a partir de este guion: [`NormaCita-slides-BORRADOR.pptx`](NormaCita-slides-BORRADOR.pptx) (se importa en Google Slides: *Archivo → Importar diapositivas* o subiéndolo a Drive). Lo regenera `scripts/generar_slides.py`.
+> Deck generado a partir de este guion: [`NormaCita-slides.pptx`](NormaCita-slides.pptx) (se importa en Google Slides: *Archivo → Importar diapositivas* o subiéndolo a Drive). Lo regenera `scripts/generar_slides.py`.
 > Enfoque recomendado en el máster: «ponencia / vender el proyecto»; contenido mínimo: cómo lo he creado, qué problema resuelve y cómo funciona. **La URL de las slides tiene que ser pública.**
 
 ## Slide 1 · NormaCita
@@ -24,7 +24,7 @@
 
 **Visual sugerido:** a la izquierda, un índice largo del REBT; a la derecha, una respuesta de chat genérico sin fuente tachada.
 
-**Notas del orador:** El problema que quiero resolver es muy concreto. Quien trabaja con instalaciones eléctricas consulta constantemente el REBT, que tiene 29 artículos y 52 ITC. Localizar el apartado exacto cuesta, y si le preguntas a un chat genérico te responde muy convencido pero sin decirte de dónde lo saca, o con una cita que no existe. [PENDIENTE: si tienes una anécdota propia de buscar un requisito en el REBT, cuéntala aquí.]
+**Notas del orador:** El problema que quiero resolver es muy concreto. Quien trabaja con instalaciones eléctricas consulta constantemente el REBT, que tiene 29 artículos y 52 ITC. Localizar el apartado exacto cuesta, y si le preguntas a un chat genérico te responde muy convencido pero sin decirte de dónde lo saca, o con una cita que no existe. Vengo de la ingeniería y conozco ese problema: en una norma técnica larga, encontrar el artículo exacto que respalda un requisito lleva más tiempo del que parece, y esa referencia es justo lo que hace falta para justificar una decisión.
 
 ## Slide 3 · Para quién
 **Contenido**
@@ -104,18 +104,18 @@
 
 **Visual sugerido:** captura de GitHub Actions en verde y esquema push → CI → Render.
 
-**Notas del orador:** Cada push a main pasa por GitHub Actions: lint, tests con la evaluación incluida, construcción de la imagen Docker y una prueba de que el contenedor responde en /health. Para el despliegue preparé un Blueprint de Render en plan gratuito. Por defecto arranca en modo demo, así que la URL sigue funcionando aunque no haya cuota de IA. [PENDIENTE: añade aquí la URL pública cuando despliegues y, si activas un LLM, cuál usas.]
+**Notas del orador:** Cada push a main pasa por GitHub Actions: lint, tests con la evaluación incluida, construcción de la imagen Docker y una prueba de que el contenedor responde en /health. Para el despliegue preparé un Blueprint de Render en plan gratuito. Por defecto arranca en modo demo, así que la URL sigue funcionando aunque no haya cuota de IA. La demo pública está en {{URL_DEMO}}. Ahora mismo funciona en modo demo, sin LLM; el adaptador para Gemini, Groq u OpenRouter está implementado y se activa solo con variables de entorno.
 
 ## Slide 10 · Cómo lo he construido con IA
 **Contenido**
 - Asistente de IA para generar la base: especificación, ADRs, código, tests y documentación
-- Mi papel: [PENDIENTE: qué decidiste, revisaste y corregiste tú]
-- La evaluación detectó errores que la IA no veía (p. ej. sobreajuste de parámetros)
+- Mi papel: elegir y validar la idea, revisar las decisiones (ADR) y validar el código generado con tests, CI y evaluación
+- La evaluación destapó errores reales: exclusiones (art. 2.4) por delante del ámbito (2.1) y sobreajuste de parámetros
 - Todo queda registrado en `docs/REGISTRO-IA.md`
 
 **Visual sugerido:** línea de tiempo de los commits (`git log`) y extracto del registro de IA.
 
-**Notas del orador:** He usado un asistente de IA durante todo el desarrollo y lo he documentado en el registro de uso de IA del repositorio. [PENDIENTE: explica con tus palabras qué partes revisaste, qué cambiaste y qué aprendiste del código.] Lo más útil fue tener tests y una evaluación automática: así se ve cuándo un cambio mejora de verdad y cuándo solo mejora en las preguntas que usaste para ajustar.
+**Notas del orador:** He usado un asistente de IA durante todo el desarrollo y lo he documentado en el registro de uso de IA del repositorio. Mi papel ha sido elegir y validar la idea, revisar las decisiones de arquitectura y comprobar cada avance con tests, el CI y la evaluación; el código lo generó el asistente y yo lo validé así. Esa red de seguridad sacó problemas reales. Con la muestra inicial del corpus, a la pregunta «¿a qué instalaciones se aplica?» salía antes el apartado 2.4, que es precisamente el de exclusiones, que el 2.1; se corrigió con stemming y penalizando las cláusulas de exclusión, y ahora tiene test de regresión. Desde el entorno del asistente no se llegaba a la web del BOE, así que la ingesta pasó a ejecutarse en GitHub Actions. Y al ajustar parámetros apareció sobreajuste: un prior más fuerte no empeoraba el ajuste pero hundía la validación, así que se eligió uno más suave y dejé escrito que esa elección miró la validación. Lo más útil fue tener tests y una evaluación automática: así se ve cuándo un cambio mejora de verdad y cuándo solo mejora en las preguntas que usaste para ajustar.
 
 ## Slide 11 · Aprendizajes y siguientes pasos
 **Contenido**
@@ -127,13 +127,13 @@
 
 **Visual sugerido:** dos columnas: «Aprendido» y «Próximo».
 
-**Notas del orador:** Me quedo con dos ideas. En un RAG lo que más importa es recuperar bien el fragmento, y eso solo se sabe midiendo. Y que el sistema diga «no tengo base» es una funcionalidad, no un fallo. Como siguientes pasos: búsqueda híbrida para las preguntas formuladas con otras palabras, ampliar la evaluación con preguntas reales y añadir más normas. [PENDIENTE: tu aprendizaje personal más importante.]
+**Notas del orador:** Me quedo con dos ideas. En un RAG lo que más importa es recuperar bien el fragmento, y eso solo se sabe midiendo. Y que el sistema diga «no tengo base» es una funcionalidad, no un fallo. Como siguientes pasos: búsqueda híbrida para las preguntas formuladas con otras palabras, ampliar la evaluación con preguntas reales y añadir más normas. Mi aprendizaje personal más importante: con un asistente de IA se avanza muy rápido, pero sin tests y sin una evaluación con datos reales no sabría si el resultado es correcto. Medir es lo que me permite confiar en el resultado y explicarlo.
 
 ## Slide 12 · Enlaces
 **Contenido**
 - Repositorio: github.com/pedronavarro-labs/normacita
-- Demo: [PENDIENTE: URL de Render]
-- Vídeo: [PENDIENTE: URL pública del vídeo]
+- Demo: {{URL_DEMO}}
+- Vídeo: {{URL_VIDEO}}
 - Fuente oficial: REBT consolidado, BOE-A-2002-18099
 - Herramienta orientativa: no es asesoramiento profesional
 
