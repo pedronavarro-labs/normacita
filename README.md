@@ -9,7 +9,7 @@ Estado: v0.2. El corpus del REBT está completo, la evaluación corre en el CI y
 | Enlace | URL |
 |---|---|
 | Demo | https://normacita.onrender.com (modo demo; pasos en [DEPLOY.md](DEPLOY.md)) |
-| Slides | {{URL_SLIDES}} ([guion](docs/presentacion/GUION-SLIDES.md) · [.pptx](docs/presentacion/NormaCita-slides.pptx)) |
+| Slides | [Presentación en Google Slides](https://docs.google.com/presentation/d/1MjF4xRdwQZTHY_CifoflS_jd1IXDTmFeELU4AWkBwNs/edit?usp=sharing) ([guion](docs/presentacion/GUION-SLIDES.md) · [.pptx](docs/presentacion/NormaCita-slides.pptx)) |
 | Vídeo | {{URL_VIDEO}} ([guion](docs/presentacion/GUION-VIDEO.md)) |
 | Repositorio | https://github.com/pedronavarro-labs/normacita |
 | Memoria (opcional) | [docs/MEMORIA.md](docs/MEMORIA.md) |
