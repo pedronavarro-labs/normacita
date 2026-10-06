@@ -1,0 +1,168 @@
+{
+  "_fuente": "BOE, datos abiertos — legislación consolidada BOE-A-2002-18099 (texto vigente consultado el 2026-10-06). Muestra de 5 artículos para desarrollo; regenerar con scripts/ingest_boe.py.",
+  "_aviso": "Texto normativo oficial (no sujeto a derechos de autor, art. 13 LPI). La tabla del art. 4.1 se ha linealizado a texto.",
+  "fragmentos": [
+    {
+      "id": "rebt-a1-1",
+      "norma": "REBT (Real Decreto 842/2002), Reglamento electrotécnico para baja tensión",
+      "articulo": "Artículo 1",
+      "titulo": "Objeto",
+      "apartado": "único",
+      "texto": "El presente Reglamento tiene por objeto establecer las condiciones técnicas y garantías que deben reunir las instalaciones eléctricas conectadas a una fuente de suministro en los límites de baja tensión, con la finalidad de: a) Preservar la seguridad de las personas y los bienes. b) Asegurar el normal funcionamiento de dichas instalaciones y prevenir las perturbaciones en otras instalaciones y servicios. c) Contribuir a la fiabilidad técnica y a la eficiencia económica de las instalaciones.",
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099#a1"
+    },
+    {
+      "id": "rebt-a2-1",
+      "norma": "REBT (Real Decreto 842/2002), Reglamento electrotécnico para baja tensión",
+      "articulo": "Artículo 2",
+      "titulo": "Campo de aplicación",
+      "apartado": "1",
+      "texto": "El presente Reglamento se aplicará a las instalaciones que distribuyan la energía eléctrica, a las generadoras de electricidad para consumo propio y a las receptoras, en los siguientes límites de tensiones nominales: a) Corriente alterna: igual o inferior a 1.000 voltios. b) Corriente continua: igual o inferior a 1.500 voltios.",
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099#a2"
+    },
+    {
+      "id": "rebt-a2-2",
+      "norma": "REBT (Real Decreto 842/2002), Reglamento electrotécnico para baja tensión",
+      "articulo": "Artículo 2",
+      "titulo": "Campo de aplicación",
+      "apartado": "2",
+      "texto": "El presente Reglamento se aplicará: a) A las nuevas instalaciones, a sus modificaciones y a sus ampliaciones. b) A las modificaciones, reparaciones y ampliaciones, sean o no de importancia, de las instalaciones existentes antes de su entrada en vigor, solo en lo que afecta a la parte modificada, reparada o ampliada, y siempre y cuando se tomen las medidas necesarias para garantizar las condiciones de seguridad del conjunto de la instalación. c) A las instalaciones existentes antes de su entrada en vigor, en lo referente al régimen de inspecciones, si bien los criterios técnicos aplicables en dichas inspecciones serán los correspondientes a la reglamentación con la que se aprobaron. Se entenderá por modificaciones o reparaciones de importancia, a los efectos de la documentación exigible y de la obligatoriedad de inspección inicial, a las que afectan a más del 50 por 100 de la potencia instalada. Igualmente se considerará modificación de importancia la que afecte a líneas completas de procesos productivos con nuevos circuitos y cuadros, aun con reducción de potencia.",
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099#a2"
+    },
+    {
+      "id": "rebt-a2-3",
+      "norma": "REBT (Real Decreto 842/2002), Reglamento electrotécnico para baja tensión",
+      "articulo": "Artículo 2",
+      "titulo": "Campo de aplicación",
+      "apartado": "3",
+      "texto": "Asimismo, se aplicará a las instalaciones existentes antes de su entrada en vigor, cuando su estado, situación o características impliquen un riesgo grave para las personas o los bienes, o se produzcan perturbaciones importantes en el normal funcionamiento de otras instalaciones, a juicio del órgano competente de la Comunidad Autónoma.",
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099#a2"
+    },
+    {
+      "id": "rebt-a2-4",
+      "norma": "REBT (Real Decreto 842/2002), Reglamento electrotécnico para baja tensión",
+      "articulo": "Artículo 2",
+      "titulo": "Campo de aplicación",
+      "apartado": "4",
+      "texto": "Se excluyen de la aplicación de este Reglamento las instalaciones y equipos de uso exclusivo en minas, material de tracción, automóviles, navíos, aeronaves, sistemas de comunicación, y los usos militares y demás instalaciones y equipos que estuvieran sujetos a reglamentación específica.",
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099#a2"
+    },
+    {
+      "id": "rebt-a2-5",
+      "norma": "REBT (Real Decreto 842/2002), Reglamento electrotécnico para baja tensión",
+      "articulo": "Artículo 2",
+      "titulo": "Campo de aplicación",
+      "apartado": "5",
+      "texto": "Las prescripciones del presente Reglamento y sus instrucciones técnicas complementarias (en adelante ITCs) son de carácter general unas, y específico, otras. Las específicas sustituirán, modificarán o complementarán a las generales, según los casos.",
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099#a2"
+    },
+    {
+      "id": "rebt-a2-6",
+      "norma": "REBT (Real Decreto 842/2002), Reglamento electrotécnico para baja tensión",
+      "articulo": "Artículo 2",
+      "titulo": "Campo de aplicación",
+      "apartado": "6",
+      "texto": "No se aplicarán las prescripciones generales, sino únicamente prescripciones específicas, que serán objeto de las correspondientes ITCs, a las instalaciones o equipos que utilizan «muy baja tensión» (hasta 50 V en corriente alterna y hasta 75 V en corriente continua), por ejemplo las redes informáticas y similares, siempre que su fuente de energía sea autónoma, no se alimenten de redes destinadas a otros suministros, o que tales instalaciones sean absolutamente independientes de las redes de baja tensión con valores por encima de los fijados para tales pequeñas tensiones.",
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099#a2"
+    },
+    {
+      "id": "rebt-a3-1",
+      "norma": "REBT (Real Decreto 842/2002), Reglamento electrotécnico para baja tensión",
+      "articulo": "Artículo 3",
+      "titulo": "Instalación eléctrica",
+      "apartado": "único",
+      "texto": "Se entiende por instalación eléctrica todo conjunto de aparatos y de circuitos asociados en previsión de un fin particular: producción, conversión, transformación, transmisión, distribución o utilización de la energía eléctrica.",
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099#a3"
+    },
+    {
+      "id": "rebt-a4-1",
+      "norma": "REBT (Real Decreto 842/2002), Reglamento electrotécnico para baja tensión",
+      "articulo": "Artículo 4",
+      "titulo": "Clasificación de las tensiones. Frecuencia de las redes",
+      "apartado": "1",
+      "texto": "A efectos de aplicación de las prescripciones del presente Reglamento, las instalaciones eléctricas de baja tensión se clasifican, según las tensiones nominales que se les asignen, en la forma siguiente: Muy baja tensión: corriente alterna (valor eficaz) Un ≤ 50 V; corriente continua (valor medio aritmético) Un ≤ 75 V. Tensión usual: corriente alterna 50 < Un ≤ 500 V; corriente continua 75 < Un ≤ 750 V. Tensión especial: corriente alterna 500 < Un ≤ 1000 V; corriente continua 750 < Un ≤ 1500 V.",
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099#a4"
+    },
+    {
+      "id": "rebt-a4-2",
+      "norma": "REBT (Real Decreto 842/2002), Reglamento electrotécnico para baja tensión",
+      "articulo": "Artículo 4",
+      "titulo": "Clasificación de las tensiones. Frecuencia de las redes",
+      "apartado": "2",
+      "texto": "Las tensiones nominales usualmente utilizadas en las distribuciones de corriente alterna serán: a) 230 V entre fases para las redes trifásicas de tres conductores. b) 230 V entre fase y neutro, y 400 V entre fases, para las redes trifásicas de 4 conductores.",
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099#a4"
+    },
+    {
+      "id": "rebt-a4-3",
+      "norma": "REBT (Real Decreto 842/2002), Reglamento electrotécnico para baja tensión",
+      "articulo": "Artículo 4",
+      "titulo": "Clasificación de las tensiones. Frecuencia de las redes",
+      "apartado": "3",
+      "texto": "Cuando en las instalaciones no pueda utilizarse alguna de las tensiones normalizadas en este Reglamento, porque deban conectarse a o derivar de otra instalación con tensión diferente, se condicionará su inscripción a que la nueva instalación pueda ser utilizada en el futuro con la tensión normalizada que pueda preverse.",
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099#a4"
+    },
+    {
+      "id": "rebt-a4-4",
+      "norma": "REBT (Real Decreto 842/2002), Reglamento electrotécnico para baja tensión",
+      "articulo": "Artículo 4",
+      "titulo": "Clasificación de las tensiones. Frecuencia de las redes",
+      "apartado": "4",
+      "texto": "La frecuencia empleada en la red será de 50 Hz.",
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099#a4"
+    },
+    {
+      "id": "rebt-a4-5",
+      "norma": "REBT (Real Decreto 842/2002), Reglamento electrotécnico para baja tensión",
+      "articulo": "Artículo 4",
+      "titulo": "Clasificación de las tensiones. Frecuencia de las redes",
+      "apartado": "5",
+      "texto": "Podrán utilizarse otras tensiones y frecuencias, previa autorización motivada del órgano competente de la Administración Pública, cuando se justifique ante el mismo su necesidad, no se produzcan perturbaciones significativas en el funcionamiento de otras instalaciones y no se menoscabe el nivel de seguridad para las personas y los bienes.",
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099#a4"
+    },
+    {
+      "id": "rebt-a1-8-1",
+      "norma": "REBT (Real Decreto 842/2002), Reglamento electrotécnico para baja tensión",
+      "articulo": "Artículo 16",
+      "titulo": "Instalaciones interiores o receptoras",
+      "apartado": "1",
+      "texto": "Las instalaciones interiores o receptoras son las que, alimentadas por una red de distribución o por una fuente de energía propia, tienen como finalidad principal la utilización de la energía eléctrica. Dentro de este concepto hay que incluir cualquier instalación receptora aunque toda ella o alguna de sus partes esté situada a la intemperie.",
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099#a1-8"
+    },
+    {
+      "id": "rebt-a1-8-2",
+      "norma": "REBT (Real Decreto 842/2002), Reglamento electrotécnico para baja tensión",
+      "articulo": "Artículo 16",
+      "titulo": "Instalaciones interiores o receptoras",
+      "apartado": "2",
+      "texto": "En toda instalación interior o receptora que se proyecte y realice se alcanzará el máximo equilibrio en las cargas que soportan los distintos conductores que forman parte de la misma, y ésta se subdividirá deforma que las perturbaciones originadas por las averías que pudieran producirse en algún punto de ella afecten a una mínima parte de la instalación. Esta subdivisión deberá permitir también la localización de las averías y facilitar el control del aislamiento de la parte de la instalación afectada.",
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099#a1-8"
+    },
+    {
+      "id": "rebt-a1-8-3",
+      "norma": "REBT (Real Decreto 842/2002), Reglamento electrotécnico para baja tensión",
+      "articulo": "Artículo 16",
+      "titulo": "Instalaciones interiores o receptoras",
+      "apartado": "3",
+      "texto": "Los sistemas de protección para las instalaciones interiores o receptoras para baja tensión impedirán los efectos de las sobreintensidades y sobretensiones que por distintas causas cabe prever en las mismas y resguardarán a sus materiales y equipos de las acciones y efectos de los agentes externos. Asimismo, y a efectos de seguridad general, se determinarán las condiciones que deben cumplir dichas instalaciones para proteger de los contactos directos e indirectos.",
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099#a1-8"
+    },
+    {
+      "id": "rebt-a1-8-4",
+      "norma": "REBT (Real Decreto 842/2002), Reglamento electrotécnico para baja tensión",
+      "articulo": "Artículo 16",
+      "titulo": "Instalaciones interiores o receptoras",
+      "apartado": "4",
+      "texto": "En la utilización de la energía eléctrica para instalaciones receptoras se adoptarán las medidas de seguridad, tanto para la protección de los usuarios como para la de las redes, que resulten proporcionadas a las características y potencia de los aparatos receptores utilizados en las mismas.",
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099#a1-8"
+    },
+    {
+      "id": "rebt-a1-8-5",
+      "norma": "REBT (Real Decreto 842/2002), Reglamento electrotécnico para baja tensión",
+      "articulo": "Artículo 16",
+      "titulo": "Instalaciones interiores o receptoras",
+      "apartado": "5",
+      "texto": "Además de los preceptos que en virtud del presente y otros reglamentos sean de aplicación a los locales de pública concurrencia, deberán cumplirse medidas y previsiones específicas, en función del riesgo que implica en los mismos un funcionamiento defectuoso de la instalación eléctrica.",
+      "url": "https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099#a1-8"
+    }
+  ]
+}
