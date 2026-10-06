@@ -5,7 +5,7 @@
 > Todos los datos salen del repositorio (06/10/2026): `docs/EVALUACION.md`, `README.md`, `tests/`, `.github/workflows/`.
 
 ## Preparación (antes de grabar)
-- Abre en pestañas: la demo (URL de Render, o `http://localhost:8000` si aún no está desplegada), el repositorio en GitHub, la pestaña **Actions** con el último run en verde, `docs/EVALUACION.md` y tu editor con el proyecto.
+- Abre en pestañas: la demo (<https://normacita.onrender.com>, o `http://localhost:8000` si prefieres grabar en local), el repositorio en GitHub, la pestaña **Actions** con el último run en verde, `docs/EVALUACION.md` y tu editor con el proyecto.
 - Si usas Render free: **abre la demo 1–2 minutos antes** (la instancia gratuita se duerme y tarda en despertar).
 - Terminal preparada en la carpeta del proyecto con el entorno activado (`source .venv/bin/activate`).
 - ⚠️ **No muestres el `.env` ni ninguna clave** (ni en el editor, ni en el panel de Render, ni en la terminal).

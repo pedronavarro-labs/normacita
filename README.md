@@ -1,11 +1,11 @@
 # NormaCita · Normativa técnica con citas verificables
 
 > Proyecto Final (TFM) del **Máster en Desarrollo con IA** (The Big School) · Autor: **Pedro Navarro Arocha**
-> Estado: 🚧 v0.2 — corpus REBT completo, evaluación automática en CI y despliegue preparado. Funciona de extremo a extremo en modo demo; ver [ROADMAP](docs/ROADMAP.md).
+> Estado: 🚧 v0.2 — corpus REBT completo, evaluación automática en CI y demo pública en Render. Funciona de extremo a extremo en modo demo; ver [ROADMAP](docs/ROADMAP.md).
 
 | Enlace | URL |
 |---|---|
-| 🌐 Demo desplegada | {{URL_DEMO}} (pasos en [DEPLOY.md](DEPLOY.md)) |
+| 🌐 Demo desplegada | https://normacita.onrender.com (modo demo; pasos en [DEPLOY.md](DEPLOY.md)) |
 | 📊 Slides (públicas) | {{URL_SLIDES}} ([guion](docs/presentacion/GUION-SLIDES.md) · [.pptx](docs/presentacion/NormaCita-slides.pptx)) |
 | 🎬 Vídeo de presentación | {{URL_VIDEO}} ([guion](docs/presentacion/GUION-VIDEO.md)) |
 | 💻 Repositorio | https://github.com/pedronavarro-labs/normacita |
@@ -35,7 +35,7 @@ Más: [error del servicio de IA](docs/img/05-error.png) · [validación de la pr
 | IA generativa | Cualquier API **OpenAI-compatible** (Gemini, Groq, OpenRouter, Ollama) vía httpx · proveedor **fake** sin claves | Proveedor intercambiable por entorno ([ADR-0002](docs/adr/ADR-0002-proveedor-llm-intercambiable.md)) |
 | Frontend | HTML + CSS + JavaScript sin framework, responsive y accesible (teclado, foco visible, ARIA) | Mínimo y seguro (CSP estricta, sin `innerHTML`, sin scripts ni estilos en línea) |
 | Calidad | pytest + pytest-cov, ruff (lint + formato + reglas de seguridad) | |
-| Infra | Docker (usuario no root), GitHub Actions (CI), despliegue previsto en Render/Fly.io | |
+| Infra | Docker (usuario no root), GitHub Actions (CI), despliegue en Render (plan free; alternativa Fly.io) | |
 | Datos | API de datos abiertos del BOE → JSON | Fuente oficial y pública |
 
 Arquitectura hexagonal; diagramas en [docs/ARQUITECTURA.md](docs/ARQUITECTURA.md).
@@ -90,7 +90,7 @@ python -m normacita.evaluation       # hit@1, hit@3, cobertura y acierto en nega
 ```
 Resultados y metodología en [docs/EVALUACION.md](docs/EVALUACION.md): hit@1 0.714 · hit@3 0.952 · negativas 1.00 (validación: 0.50 / 0.917 / 1.00).
 
-**Despliegue:** preparado para Render (`render.yaml`, plan free, modo demo por defecto) con alternativa en Fly.io. Paso a paso y claves gratuitas de LLM en [DEPLOY.md](DEPLOY.md).
+**Despliegue:** público en Render, <https://normacita.onrender.com> (`render.yaml`, plan free, modo demo con el proveedor *fake*). La instancia gratuita se duerme tras unos 15 min sin tráfico, así que la primera petición puede tardar en responder mientras despierta. Alternativa en Fly.io. Paso a paso y claves gratuitas de LLM en [DEPLOY.md](DEPLOY.md).
 
 ## d. Estructura del proyecto
 ```
@@ -122,7 +122,8 @@ normacita/
 - ✅ Validación de citas: se eliminan los marcadores que el modelo invente.
 - ✅ Proveedor de IA intercambiable (modo demo sin claves).
 - ✅ Seguridad: validación de entradas, rate limit por IP, CSP y cabeceras, errores genéricos.
-- ⏳ Despliegue público (preparado) · LLM real en producción · búsqueda híbrida · feedback 👍/👎.
+- ✅ Despliegue público en Render: https://normacita.onrender.com (modo demo; plan free, se duerme tras ~15 min sin tráfico).
+- ⏳ LLM real en producción · búsqueda híbrida · feedback 👍/👎.
 
 API:
 | Método | Ruta | Descripción |
@@ -135,4 +136,4 @@ API:
 No aplica en la v0.2: la app es pública y **no tiene login**. Si se añade el panel de administración (HU-14), aquí irán las credenciales de prueba.
 
 ---
-Licencia: `PENDIENTE de elegir` · Uso de IA en el desarrollo: [docs/REGISTRO-IA.md](docs/REGISTRO-IA.md) · Reglas para agentes: [AGENTS.md](AGENTS.md)
+Licencia: [MIT](LICENSE) · Uso de IA en el desarrollo: [docs/REGISTRO-IA.md](docs/REGISTRO-IA.md) · Reglas para agentes: [AGENTS.md](AGENTS.md)
