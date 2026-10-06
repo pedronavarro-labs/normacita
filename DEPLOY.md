@@ -3,6 +3,7 @@
 > Objetivo: una **URL pública** para que el tribunal del TFM pruebe la app sin instalar nada (HU-08).
 > La app arranca siempre en **modo demo** (`LLM_PROVIDER=fake`, sin claves): responde con extractos literales y citas. Con una clave de un LLM gratuito pasa a redactar respuestas.
 > **Ninguna cuenta se ha creado por ti**: los pasos marcados con 👤 los tienes que hacer tú.
+> **Estado actual:** desplegado en Render (plan free, modo demo) en <https://normacita.onrender.com>.
 
 ## 0. Requisitos
 - Repositorio público: <https://github.com/pedronavarro-labs/normacita> (CI en verde en `main`).

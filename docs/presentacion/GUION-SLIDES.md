@@ -104,7 +104,7 @@
 
 **Visual sugerido:** captura de GitHub Actions en verde y esquema push → CI → Render.
 
-**Notas del orador:** Cada push a main pasa por GitHub Actions: lint, tests con la evaluación incluida, construcción de la imagen Docker y una prueba de que el contenedor responde en /health. Para el despliegue preparé un Blueprint de Render en plan gratuito. Por defecto arranca en modo demo, así que la URL sigue funcionando aunque no haya cuota de IA. La demo pública está en {{URL_DEMO}}. Ahora mismo funciona en modo demo, sin LLM; el adaptador para Gemini, Groq u OpenRouter está implementado y se activa solo con variables de entorno.
+**Notas del orador:** Cada push a main pasa por GitHub Actions: lint, tests con la evaluación incluida, construcción de la imagen Docker y una prueba de que el contenedor responde en /health. Para el despliegue preparé un Blueprint de Render en plan gratuito. Por defecto arranca en modo demo, así que la URL sigue funcionando aunque no haya cuota de IA. La demo pública está en https://normacita.onrender.com. Ahora mismo funciona en modo demo, sin LLM; el adaptador para Gemini, Groq u OpenRouter está implementado y se activa solo con variables de entorno.
 
 ## Slide 10 · Cómo lo he construido con IA
 **Contenido**
@@ -132,7 +132,7 @@
 ## Slide 12 · Enlaces
 **Contenido**
 - Repositorio: github.com/pedronavarro-labs/normacita
-- Demo: {{URL_DEMO}}
+- Demo: https://normacita.onrender.com
 - Vídeo: {{URL_VIDEO}}
 - Fuente oficial: REBT consolidado, BOE-A-2002-18099
 - Herramienta orientativa: no es asesoramiento profesional

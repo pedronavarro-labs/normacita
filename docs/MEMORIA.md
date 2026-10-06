@@ -11,7 +11,7 @@
 | **Máster** | Máster en Desarrollo con IA · The Big School (3.ª edición) |
 | **Fecha** | Octubre de 2026 |
 | **Repositorio** | https://github.com/pedronavarro-labs/normacita |
-| **Demo desplegada** | {{URL_DEMO}} |
+| **Demo desplegada** | https://normacita.onrender.com |
 | **Slides** | {{URL_SLIDES}} |
 | **Vídeo** | {{URL_VIDEO}} |
 
@@ -63,7 +63,7 @@ Mi motivación viene de mi perfil de ingeniería. Sé lo que cuesta localizar, d
 | O4 | Calidad medible: tests y evaluación automática en CI | ✅ Hecho (HU-07): 57 tests, 52 preguntas |
 | O5 | Seguridad web y OWASP Top 10 para LLM | ✅ Controles base (HU-04, ADR-0004) |
 | O6 | Proveedor de IA intercambiable y modo demo sin claves | ✅ Hecho (ADR-0002); ⏳ LLM real en producción (HU-06) |
-| O7 | Despliegue público gratuito | 🟡 Preparado (`render.yaml`, `DEPLOY.md`); ⏳ falta desplegar (HU-08) |
+| O7 | Despliegue público gratuito | ✅ Hecho (HU-08): Render, plan gratuito, modo demo (https://normacita.onrender.com) |
 
 ## 3. Análisis
 
@@ -93,7 +93,7 @@ Mi motivación viene de mi perfil de ingeniería. Sé lo que cuesta localizar, d
 | HU-05 | Corpus REBT completo desde el BOE | Script de ingesta → JSON por apartado con la versión consolidada | ✅ |
 | HU-06 | Respuesta generada por un LLM real | Con `openai_compatible` y credenciales, respuesta con el prompt versionado y citas | ⏳ (implementado, sin probar en producción) |
 | HU-07 | Evaluación automática de calidad | ≥ 20 preguntas con artículo esperado; *hit@k* en CI con umbral | ✅ |
-| HU-08 | Despliegue público | URL en el README; `/health` 200; modo demo si no hay cuota | 🟡 preparado |
+| HU-08 | Despliegue público | URL en el README; `/health` 200; modo demo si no hay cuota | ✅ desplegado en Render (modo demo) |
 
 Después del MVP: feedback 👍/👎 (HU-09), historial local (HU-10), búsqueda híbrida (HU-11), varias normas con filtro (HU-12), trazas LLMOps (HU-13), login de administrador (HU-14).
 
@@ -360,7 +360,7 @@ flowchart LR
 - **Despliegue**: `render.yaml` (Blueprint) con un servicio web Docker en plan gratuito, health check `/health`, `LLM_PROVIDER=fake` por defecto y variables secretas con `sync: false`, que se rellenan en el panel. `DEPLOY.md` documenta paso a paso Render, la alternativa Fly.io (sin plan gratuito para cuentas nuevas) y cómo obtener una clave gratuita de Gemini, Groq u OpenRouter.
 - Limitaciones: la instancia gratuita de Render se duerme tras unos 15 min sin tráfico, y el rate limit en memoria se reinicia en cada despliegue.
 
-La demo pública está en {{URL_DEMO}}. Funciona en modo demo (proveedor *fake*: respuestas extractivas con sus citas). El proveedor compatible con OpenAI está implementado y se activa con variables de entorno, pero todavía no lo he probado en producción.
+La demo pública está en https://normacita.onrender.com. Funciona en modo demo (proveedor *fake*: respuestas extractivas con sus citas). El proveedor compatible con OpenAI está implementado y se activa con variables de entorno, pero todavía no lo he probado en producción.
 
 ## 10. Uso de IA en el desarrollo
 
@@ -395,7 +395,7 @@ Lo que funcionó para controlar el trabajo del asistente:
 - Respuestas con citas verificables y rechazo correcto del 100 % de las preguntas fuera de ámbito del conjunto de evaluación.
 - Recuperación: hit@3 0,952 en total y 0,917 en validación.
 - 57 tests, 94 % de cobertura y CI en verde con evaluación incluida.
-- Despliegue preparado en plan gratuito, con modo demo.
+- Demo pública en Render (plan gratuito) en modo demo, con el proveedor *fake*: https://normacita.onrender.com.
 
 **Limitaciones (honestas):**
 
@@ -404,7 +404,7 @@ Lo que funcionó para controlar el trabajo del asistente:
 - **Negativas fáciles:** las preguntas fuera de ámbito son claramente ajenas (cocina, fútbol…). Faltan negativas cercanas (alta tensión, gas, normativa autonómica).
 - **Paráfrasis:** BM25 falla cuando la pregunta no comparte palabras con la norma. Por ejemplo, «¿Quién puede realizar las instalaciones eléctricas?» no recupera la cita esperada (art. 18.2 o 22.1). «¿Cómo se protege contra contactos directos?» tampoco.
 - **Sin LLM real en producción todavía:** la calidad de la redacción con un modelo real (fidelidad a las citas, latencia) no está medida (HU-06, RNF-05).
-- **Sin despliegue público todavía** (HU-08).
+- **Demo pública en modo demo y plan gratuito** (HU-08): está desplegada en Render, pero con el proveedor *fake*, así que responde con extractos literales y no redacta. Además, la instancia se duerme tras unos 15 min sin tráfico y la primera petición tarda en despertarla.
 - Rate limit en memoria (una instancia) y corpus estático: hay que relanzar la ingesta cuando el BOE consolide cambios.
 
 ## 12. Conclusiones y trabajo futuro
@@ -419,7 +419,7 @@ A nivel personal, lo que más me llevo del máster aplicado a este proyecto es u
 
 **Trabajo futuro** (ver `docs/ROADMAP.md`):
 
-1. Desplegar en Render y probar un LLM real gratuito; medir latencia y fidelidad.
+1. Activar un LLM real gratuito en el despliegue de Render; medir latencia y fidelidad.
 2. Ampliar la evaluación: preguntas reales de profesionales y negativas cercanas; subir los umbrales del CI.
 3. Búsqueda híbrida (BM25 + embeddings con fusión RRF) para las paráfrasis (HU-11).
 4. Feedback 👍/👎 (HU-09) y trazas LLMOps de latencia y tokens (HU-13).
@@ -481,6 +481,6 @@ Con un LLM real: `LLM_PROVIDER=openai_compatible`, `LLM_BASE_URL`, `LLM_API_KEY`
 | Despliegue | https://github.com/pedronavarro-labs/normacita/blob/main/DEPLOY.md |
 | Registro de uso de IA | https://github.com/pedronavarro-labs/normacita/blob/main/docs/REGISTRO-IA.md |
 | Fuente oficial (REBT consolidado) | https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099 |
-| Demo | {{URL_DEMO}} |
+| Demo | https://normacita.onrender.com |
 | Slides | {{URL_SLIDES}} |
 | Vídeo | {{URL_VIDEO}} |

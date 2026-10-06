@@ -7,7 +7,7 @@
 |---|---|---|
 | **Fecha límite de entrega** | **26/10/2026** | ✅ Confirmado por soporte vía ticket, 06/10/2026 (la entrega ya está abierta) |
 | **Entrega objetivo (sugerida)** | **20/10/2026** | 6 días de margen ante imprevistos (despliegue, cuota de IA, subida del vídeo) |
-| Semana 1 · Hazlo tuyo y publícalo | 06–11/10 | Revisar código y documentación, desplegar en Render |
+| Semana 1 · Hazlo tuyo y publícalo | 06–11/10 | Revisar código y documentación, desplegar en Render (✅ desplegado) |
 | Semana 2 · IA real y calidad | 12–16/10 | Clave LLM gratuita, ampliar evaluación |
 | Semanas 3-4 (comprimidas) · Presentación y entrega | 17–20/10 | README final, slides públicas, vídeo, prueba en incógnito, Typeform |
 | Margen | 21–26/10 | Solo correcciones; no empezar funcionalidades nuevas |
@@ -26,7 +26,7 @@ Con la fecha confirmada, el ritmo A (~4 semanas) se comprime a unas 2 semanas. L
 | ✅ Dockerfile + workflow CI | 8 | D |
 
 ## Avance v0.2 (06/10/2026)
-Repo público, corpus completo, evaluación en CI, BM25 mejorado y despliegue preparado. Detalle en las tablas (✅) y en `docs/REGISTRO-IA.md`.
+Repo público, corpus completo, evaluación en CI, BM25 mejorado y demo pública en Render (https://normacita.onrender.com, modo demo). Detalle en las tablas (✅) y en `docs/REGISTRO-IA.md`.
 
 ## Semana 1 · Hazlo tuyo y publícalo
 | Tarea | Fase | Checklist |
@@ -34,7 +34,7 @@ Repo público, corpus completo, evaluación en CI, BM25 mejorado y despliegue pr
 | ⏳ Leer el código capa a capa y ejecutar los tests en tu máquina (README §c). Anota dudas en `REGISTRO-IA.md` | 0, 4 | D («entiendes el código») |
 | ⏳ Revisar `DECISION.md` y `ESPECIFICACION.md`: ajustar persona, nicho y alcance a tu experiencia real | 1, 2 | B |
 | ✅ Autor de los commits a tu nombre y **repo público en GitHub** (<https://github.com/pedronavarro-labs/normacita>) | 4 | C |
-| ✅ CI de GitHub Actions en verde (lint, 51 tests con umbrales de evaluación, build + smoke test Docker) | 8 | D |
+| ✅ CI de GitHub Actions en verde (lint, 57 tests con umbrales de evaluación, build + smoke test Docker) | 8 | D |
 | ✅ REBT completo ingerido desde el XML oficial del BOE (arts. 1-29 + ITC-BT-01…52, 832 fragmentos) vía workflow «Ingesta BOE (manual)». ⏳ Revísalo por encima (algunas ITC con tablas largas) | 5 | B (HU-05) |
 | ✅ Fecha límite confirmada: **26/10/2026** (soporte, ticket del 06/10/2026) · ⏳ confirmar si eres alumno Fundae | 0 | A |
 
@@ -50,7 +50,7 @@ Repo público, corpus completo, evaluación en CI, BM25 mejorado y despliegue pr
 ## Semana 3 · Seguridad, despliegue y observabilidad
 | Tarea | Fase | Checklist |
 |---|---|---|
-| 🟡 Despliegue **preparado** (`render.yaml`, `DEPLOY.md`). ⏳ 👤 Crear cuenta en Render y aplicar el Blueprint; variables `LLM_*` en el panel (nunca en el repo) | 8 | E |
+| ✅ Despliegue público en Render con el Blueprint (`render.yaml`, plan free, modo demo): <https://normacita.onrender.com>. ⏳ 👤 Cuando haya clave, variables `LLM_*` en el panel (nunca en el repo) | 8 | E |
 | ⏳ Añadir CD: despliegue automático desde `main` tras CI verde | 8 | D |
 | ⏳ Tests adversarios de prompt injection (preguntas que intentan saltarse las reglas) | 7 | D (OWASP LLM) |
 | ⏳ gitleaks + pip-audit/Dependabot en CI; CORS restringido | 7 | C, D |
@@ -60,9 +60,9 @@ Repo público, corpus completo, evaluación en CI, BM25 mejorado y despliegue pr
 ## Semana 4 · Documentación, presentación y entrega
 | Tarea | Fase | Checklist |
 |---|---|---|
-| 🟡 README: 6 puntos (a–f) y **capturas** ✅; ⏳ URLs de despliegue, slides y vídeo | 9 | F |
-| 🟡 Slides: **borrador** listo (`docs/presentacion/GUION-SLIDES.md` + `.pptx`, 12 slides con capturas). ⏳ 👤 Hazlas tuyas en Google Slides y publícalas | 10 | G |
-| 🟡 Vídeo: **guion borrador** (`docs/presentacion/GUION-VIDEO.md`, ~6:50 min). ⏳ 👤 Grabarlo con captura de pantalla y publicarlo | 10 | H |
+| 🟡 README: 6 puntos (a–f), **capturas** y URL de la demo ✅; ⏳ URLs de slides y vídeo | 9 | F |
+| 🟡 Slides: **hechas** (`docs/presentacion/GUION-SLIDES.md` + `.pptx`, 12 slides con capturas y URL de la demo). ⏳ 👤 Publicarlas en Google Slides (enlace público) y poner la URL en README, memoria y slides | 10 | G |
+| 🟡 Vídeo: **guion hecho** (`docs/presentacion/GUION-VIDEO.md`, ~6:50 min). ⏳ 👤 Grabarlo con captura de pantalla, publicarlo y poner la URL en README, memoria y slides | 10 | H |
 | ⏳ Prueba en incógnito de todos los enlaces; alguien ajeno sigue el README | 11 | F, G, H, I |
 | ⏳ Rellenar y **enviar tú** el Typeform de la lección «Proyecto Final» | 11 | I |
 

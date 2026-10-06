@@ -53,7 +53,7 @@ Como usuario/a, quiero respuestas redactadas (no solo extractos) cuando hay un p
 Como desarrollador, quiero un conjunto de ≥ 20 preguntas de referencia con su artículo esperado y medir la *precisión de cita* en CI.
 - `pytest -m eval` (o script) calcula *hit@k* del recuperador; el CI falla si baja de un umbral acordado (p. ej. 0,8).
 
-**HU-08 · Despliegue público** ⏳ (preparado: `render.yaml` + `DEPLOY.md`; falta crear la cuenta y desplegar)
+**HU-08 · Despliegue público** ✅ (v0.2: desplegado en Render en modo demo, https://normacita.onrender.com; ver `render.yaml` y `DEPLOY.md`)
 Como evaluador/a del TFM, quiero una URL pública para probar la app sin instalar nada.
 - URL en el README; `/health` responde 200; modo demo si no hay cuota de IA.
 
