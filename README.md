@@ -17,13 +17,22 @@ Corpus inicial: **Reglamento Electrotécnico para Baja Tensión (REBT)**, Real D
 
 > ⚠️ Herramienta orientativa: no sustituye al texto oficial ni al criterio profesional.
 
+### Capturas (modo demo, sin LLM)
+| Inicio | Respuesta con citas desplegadas |
+|---|---|
+| ![Pantalla de inicio con ejemplos de preguntas](docs/img/01-inicio.png) | ![Respuesta con citas numeradas y el texto literal del BOE desplegado](docs/img/02-respuesta-con-citas.png) |
+| **Sin base en la norma** | **Móvil** |
+| ![Pregunta ajena al REBT rechazada](docs/img/03-sin-base.png) | ![Vista móvil con una respuesta y su cita](docs/img/04-movil-respuesta.png) |
+
+Más: [error del servicio de IA](docs/img/05-error.png) · [validación de la pregunta](docs/img/06-validacion.png) · [inicio en móvil](docs/img/04a-movil-inicio.png).
+
 ## b. Stack tecnológico
 | Capa | Tecnología | Por qué |
 |---|---|---|
 | Backend / API | Python 3.11+, **FastAPI**, Pydantic v2, Uvicorn | Ecosistema IA en Python, validación tipada, OpenAPI automático |
 | Recuperación (RAG) | BM25 propio en Python puro (stemming ligero, campo título, umbral de cobertura) | Determinista, gratis y testeable ([ADR-0003](docs/adr/ADR-0003-recuperacion-bm25-primero.md)) |
 | IA generativa | Cualquier API **OpenAI-compatible** (Gemini, Groq, OpenRouter, Ollama) vía httpx · proveedor **fake** sin claves | Proveedor intercambiable por entorno ([ADR-0002](docs/adr/ADR-0002-proveedor-llm-intercambiable.md)) |
-| Frontend | HTML + CSS + JavaScript sin framework | Mínimo y seguro (CSP estricta, sin `innerHTML`) |
+| Frontend | HTML + CSS + JavaScript sin framework, responsive y accesible (teclado, foco visible, ARIA) | Mínimo y seguro (CSP estricta, sin `innerHTML`, sin scripts ni estilos en línea) |
 | Calidad | pytest + pytest-cov, ruff (lint + formato + reglas de seguridad) | |
 | Infra | Docker (usuario no root), GitHub Actions (CI), despliegue previsto en Render/Fly.io | |
 | Datos | API de datos abiertos del BOE → JSON | Fuente oficial y pública |
@@ -96,15 +105,16 @@ normacita/
 ├── data/corpus/rebt.json  # Corpus REBT completo troceado por apartado
 ├── eval/preguntas.json    # 52 preguntas de evaluación con la cita esperada
 ├── scripts/ingest_boe.py  # Ingesta desde la API de datos abiertos del BOE
-├── tests/                 # 51 tests (unitarios, API, ingesta y evaluación), sin red ni claves
-├── docs/                  # Especificación, arquitectura, ADRs, roadmap, registro de IA
+├── tests/                 # 57 tests (unitarios, API, UI, ingesta y evaluación), sin red ni claves
+├── docs/                  # Especificación, arquitectura, ADRs, evaluación, capturas (img/), presentación, registro de IA
 ├── .github/workflows/     # CI (lint, tests, Docker) + ingesta BOE manual
 ├── Dockerfile · render.yaml · DEPLOY.md · .env.example · AGENTS.md · pyproject.toml
 ```
 
 ## e. Funcionalidades principales
 - ✅ Pregunta en lenguaje natural → respuesta con **citas numeradas** [n] al artículo y apartado.
-- ✅ Visor de la fuente: texto literal + enlace al BOE por cada cita.
+- ✅ Citas como *chips* clicables (y marcadores [n] en el texto) que despliegan el texto literal del BOE y su enlace.
+- ✅ Preguntas de ejemplo, estado de carga, estados claros de «sin base en la norma» y de error, insignia «Modo demo».
 - ✅ **«Sin base normativa»**: si nada relevante supera los umbrales de puntuación y cobertura, no responde ni llama al LLM.
 - ✅ Corpus REBT completo (arts. 1-29 + ITC-BT-01…52) desde el XML oficial del BOE.
 - ✅ Evaluación automática en CI (hit@1/hit@3 de la cita y acierto en negativas).
