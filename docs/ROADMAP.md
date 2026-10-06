@@ -1,6 +1,19 @@
-# Roadmap — NormaCita (ritmo A, ~4 semanas)
+# Roadmap — NormaCita (entrega límite 26/10/2026)
 
-> Mapeado a las fases de [`PLAN.md`](../../../PLAN.md) y a las secciones de [`CHECKLIST.md`](../../../CHECKLIST.md) de la carpeta del TFM. Las fechas son relativas (S1 = semana en que empiezas). **La fecha límite de entrega de la 3.ª edición no aparece en ninguna fuente: confírmala** (CHECKLIST A).
+> Mapeado a las fases de [`PLAN.md`](../../../PLAN.md) y a las secciones de [`CHECKLIST.md`](../../../CHECKLIST.md) de la carpeta del TFM.
+
+## 📅 Fechas clave
+| Hito | Fecha | Nota |
+|---|---|---|
+| **Fecha límite de entrega** | **26/10/2026** | ✅ Confirmado por soporte vía ticket, 06/10/2026 (la entrega ya está abierta) |
+| **Entrega objetivo (sugerida)** | **20/10/2026** | 6 días de margen ante imprevistos (despliegue, cuota de IA, subida del vídeo) |
+| Semana 1 · Hazlo tuyo y publícalo | 06–11/10 | Revisar código y documentación, desplegar en Render |
+| Semana 2 · IA real y calidad | 12–16/10 | Clave LLM gratuita, ampliar evaluación |
+| Semanas 3-4 (comprimidas) · Presentación y entrega | 17–20/10 | README final, slides públicas, vídeo, prueba en incógnito, Typeform |
+| Margen | 21–26/10 | Solo correcciones; no empezar funcionalidades nuevas |
+
+Con la fecha confirmada, el ritmo A (~4 semanas) se comprime a unas 2 semanas. Lo opcional (⭐) solo si sobra tiempo.
+
 > Leyenda: ✅ hecho en el arranque · ⏳ pendiente · ⭐ recomendable si sobra tiempo.
 
 ## Semana 0 · Arranque (hecho el 06/10/2026)
@@ -23,7 +36,7 @@ Repo público, corpus completo, evaluación en CI, BM25 mejorado y despliegue pr
 | ✅ Autor de los commits a tu nombre y **repo público en GitHub** (<https://github.com/pedronavarro-labs/normacita>) | 4 | C |
 | ✅ CI de GitHub Actions en verde (lint, 51 tests con umbrales de evaluación, build + smoke test Docker) | 8 | D |
 | ✅ REBT completo ingerido desde el XML oficial del BOE (arts. 1-29 + ITC-BT-01…52, 832 fragmentos) vía workflow «Ingesta BOE (manual)». ⏳ Revísalo por encima (algunas ITC con tablas largas) | 5 | B (HU-05) |
-| ⏳ Confirmar la fecha límite de entrega y si eres alumno Fundae | 0 | A |
+| ✅ Fecha límite confirmada: **26/10/2026** (soporte, ticket del 06/10/2026) · ⏳ confirmar si eres alumno Fundae | 0 | A |
 
 ## Semana 2 · IA real y calidad medible
 | Tarea | Fase | Checklist |
