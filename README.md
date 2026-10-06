@@ -10,7 +10,7 @@ Estado: v0.2. El corpus del REBT está completo, la evaluación corre en el CI y
 |---|---|
 | Demo | https://normacita.onrender.com (modo demo; pasos en [DEPLOY.md](DEPLOY.md)) |
 | Slides | [Presentación en Google Slides](https://docs.google.com/presentation/d/1MjF4xRdwQZTHY_CifoflS_jd1IXDTmFeELU4AWkBwNs/edit?usp=sharing) ([guion](docs/presentacion/GUION-SLIDES.md) · [.pptx](docs/presentacion/NormaCita-slides.pptx)) |
-| Vídeo | [https://github.com/pedronavarro-labs/normacita/releases/tag/tfm-demo-video](https://github.com/pedronavarro-labs/normacita/releases/tag/tfm-demo-video) ([guion](docs/presentacion/GUION-VIDEO.md); [descarga mp4](https://github.com/pedronavarro-labs/normacita/releases/download/tfm-demo-video/NormaCita-TFM-demo.mp4)) |
+| Vídeo | [https://github.com/pedronavarro-labs/normacita/releases/tag/normacita-tfm-presentacion](https://github.com/pedronavarro-labs/normacita/releases/tag/normacita-tfm-presentacion) ([guion](docs/presentacion/GUION-VIDEO.md); [descarga mp4](https://github.com/pedronavarro-labs/normacita/releases/download/normacita-tfm-presentacion/NormaCita-Presentacion-TFM.mp4)) |
 | Repositorio | https://github.com/pedronavarro-labs/normacita |
 | Memoria (opcional) | [docs/MEMORIA.md](docs/MEMORIA.md) |
 
