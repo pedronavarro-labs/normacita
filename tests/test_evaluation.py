@@ -8,7 +8,7 @@ import pytest
 
 from normacita.evaluation import apartado_base, cargar_preguntas, evaluar
 
-UMBRALES = {"hit@1": 0.60, "hit@3": 0.70, "cobertura": 0.95, "acierto_negativas": 0.25}
+UMBRALES = {"hit@1": 0.70, "hit@3": 0.90, "cobertura": 0.95, "acierto_negativas": 0.90}
 
 
 @pytest.fixture(scope="module")

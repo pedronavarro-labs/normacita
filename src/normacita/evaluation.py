@@ -48,6 +48,7 @@ class Fila:
     id: str
     pregunta: str
     tipo: str  # "corpus" | "fuera"
+    conjunto: str  # "ajuste" | "validacion"
     top: list[str]  # referencias recuperadas (por encima del umbral)
     hit1: bool = False
     hit3: bool = False
@@ -67,8 +68,13 @@ class Informe:
 
     @property
     def metricas(self) -> dict[str, float | int]:
-        corpus = [f for f in self.filas if f.tipo == "corpus"]
-        fuera = [f for f in self.filas if f.tipo == "fuera"]
+        return self.metricas_de()
+
+    def metricas_de(self, conjunto: str | None = None) -> dict[str, float | int]:
+        """Métricas de todo el conjunto o solo de 'ajuste' / 'validacion'."""
+        filas = [f for f in self.filas if conjunto in (None, f.conjunto)]
+        corpus = [f for f in filas if f.tipo == "corpus"]
+        fuera = [f for f in filas if f.tipo == "fuera"]
         return {
             "preguntas_corpus": len(corpus),
             "preguntas_fuera": len(fuera),
@@ -79,14 +85,14 @@ class Informe:
         }
 
     def markdown(self) -> str:
-        m = self.metricas
+        total, aj, va = self.metricas, self.metricas_de("ajuste"), self.metricas_de("validacion")
         lineas = [
-            "| Métrica | Valor |",
-            "|---|---|",
-            *(f"| {k} | {v} |" for k, v in m.items()),
-            "",
-            "| Id | Pregunta | Esperado OK | Top recuperado |",
+            "| Métrica | Total | Ajuste | Validación |",
             "|---|---|---|---|",
+            *(f"| {k} | {total[k]} | {aj[k]} | {va[k]} |" for k in total),
+            "",
+            "| Id | Conjunto | Pregunta | Resultado | Top recuperado |",
+            "|---|---|---|---|---|",
         ]
         for f in self.filas:
             estado = (
@@ -95,7 +101,7 @@ class Informe:
                 else ("✅ @1" if f.hit1 else "🟡 @3" if f.hit3 else "❌")
             )
             top = "; ".join(f.top[:3]) or "—"
-            lineas.append(f"| {f.id} | {f.pregunta} | {estado} | {top} |")
+            lineas.append(f"| {f.id} | {f.conjunto} | {f.pregunta} | {estado} | {top} |")
         return "\n".join(lineas)
 
 
@@ -104,18 +110,22 @@ def cargar_preguntas(path: Path = EVAL_PATH) -> list[dict]:
 
 
 def evaluar(
-    retriever: Retriever, preguntas: list[dict], top_k: int = 4, min_score: float = 1.0
+    retriever: Retriever,
+    preguntas: list[dict],
+    top_k: int = 4,
+    min_score: float = 1.0,
+    min_coverage: float = 0.3,
 ) -> Informe:
-    ask = AskQuestion(retriever, FakeLLMProvider(), top_k=top_k, min_score=min_score)
+    ask = AskQuestion(retriever, FakeLLMProvider(), top_k, min_score, min_coverage)
     informe = Informe()
     for q in preguntas:
-        hits = [h for h in retriever.search(q["pregunta"], top_k) if h.score >= min_score]
-        frags = [h.fragment for h in hits]
+        frags = [h.fragment for h in ask.relevant(q["pregunta"])]
         answer = ask.execute(q["pregunta"])
         fila = Fila(
             id=q["id"],
             pregunta=q["pregunta"],
             tipo="fuera" if q["esperado"] == "fuera" else "corpus",
+            conjunto=q.get("conjunto", "ajuste"),
             top=[f"{f.articulo} {apartado_base(f.apartado)}" for f in frags],
             rechazada=answer.sin_base,
         )
@@ -133,9 +143,14 @@ def main(argv: list[str] | None = None) -> int:
     settings = Settings.from_env()
     retriever = BM25Retriever(load_corpus(settings.corpus_path))
     informe = evaluar(
-        retriever, cargar_preguntas(), settings.retrieval_top_k, settings.retrieval_min_score
+        retriever,
+        cargar_preguntas(),
+        settings.retrieval_top_k,
+        settings.retrieval_min_score,
+        settings.retrieval_min_coverage,
     )
-    print(json.dumps(informe.metricas, ensure_ascii=False, indent=2))
+    resumen = {c: informe.metricas_de(c) for c in (None, "ajuste", "validacion")}
+    print(json.dumps({k or "total": v for k, v in resumen.items()}, ensure_ascii=False, indent=2))
     if args.markdown:
         args.markdown.write_text(informe.markdown() + "\n", encoding="utf-8")
     return 0
