@@ -3,30 +3,110 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NormaCita · Normativa técnica con citas</title>
+  <meta name="description" content="Respuestas sobre el Reglamento Electrotécnico para Baja Tensión con la cita exacta del BOE.">
+  <meta name="color-scheme" content="light">
+  <title>NormaCita · El REBT con citas verificables</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <main>
-    <header>
-      <h1>NormaCita</h1>
-      <p>Pregunta sobre el <strong>REBT</strong> (artículos 1-29 e ITC-BT-01 a 52) y obtén una respuesta con citas verificables.</p>
-    </header>
-    <form id="ask-form">
-      <label for="pregunta">Tu pregunta</label>
-      <textarea id="pregunta" name="pregunta" minlength="3" maxlength="500" required
-        placeholder="¿Qué se considera baja tensión?"></textarea>
-      <button type="submit">Preguntar</button>
-    </form>
-    <section id="resultado" aria-live="polite" hidden>
-      <h2>Respuesta</h2>
-      <p id="respuesta"></p>
-      <h3>Fuentes</h3>
-      <ol id="citas"></ol>
+  <a class="skip-link" href="#pregunta">Saltar a la pregunta</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="/" aria-label="NormaCita, inicio">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <rect width="32" height="32" rx="8" class="brand-bg"/>
+          <path d="M9 23V9h2.6l7.2 9.6V9H21v14h-2.6l-7.2-9.6V23z" class="brand-fg"/>
+        </svg>
+        <span class="brand-name">NormaCita</span>
+      </a>
+      <span id="demo-badge" class="badge badge-demo" hidden
+            title="Sin modelo de IA configurado: las respuestas son extractos literales del BOE">Modo demo</span>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <section class="hero" aria-labelledby="titulo">
+      <h1 id="titulo">Pregunta al REBT. Recibe la cita exacta del BOE.</h1>
+      <p class="lead">Respuestas sobre el Reglamento Electrotécnico para Baja Tensión (artículos 1-29 e ITC-BT-01 a 52)
+        con el artículo y apartado de los que salen. Si la norma no lo cubre, te lo decimos.</p>
     </section>
-    <p id="error" role="alert" hidden></p>
-    <footer>Orientativo. No sustituye al texto oficial publicado en el BOE.</footer>
+
+    <form id="ask-form" class="card ask" novalidate>
+      <label for="pregunta" class="label">Tu pregunta</label>
+      <textarea id="pregunta" name="pregunta" minlength="3" maxlength="500" required rows="3"
+        aria-describedby="pregunta-ayuda pregunta-error contador"
+        placeholder="Ej.: ¿Qué potencia mínima hay que prever en una vivienda nueva?"></textarea>
+      <p id="pregunta-error" class="field-error" hidden></p>
+      <div class="ask-row">
+        <p id="pregunta-ayuda" class="hint">Entre 3 y 500 caracteres<span class="kbd-hint"> · <kbd>Ctrl</kbd>+<kbd>Enter</kbd> para enviar</span></p>
+        <span id="contador" class="hint counter" aria-live="off">0/500</span>
+      </div>
+      <div class="ask-actions">
+        <button type="submit" id="enviar" class="btn btn-primary">
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="btn-label">Preguntar</span>
+        </button>
+      </div>
+      <div class="examples" role="group" aria-labelledby="ejemplos-titulo">
+        <p id="ejemplos-titulo" class="hint">Prueba con un ejemplo:</p>
+        <ul class="chip-list">
+          <li><button type="button" class="chip chip-example">¿Qué potencia mínima hay que prever en una vivienda nueva?</button></li>
+          <li><button type="button" class="chip chip-example">¿Cada cuántos años hay inspecciones periódicas?</button></li>
+          <li><button type="button" class="chip chip-example">¿Qué tensiones nominales se usan en las redes trifásicas?</button></li>
+          <li><button type="button" class="chip chip-example">¿Qué instalaciones quedan excluidas del reglamento?</button></li>
+          <li><button type="button" class="chip chip-example">¿Qué es un aislamiento reforzado?</button></li>
+        </ul>
+      </div>
+    </form>
+
+    <div id="estado" class="sr-only" role="status" aria-live="polite"></div>
+
+    <section id="cargando" class="card skeleton" hidden aria-hidden="true">
+      <div class="sk-line sk-w60"></div>
+      <div class="sk-line"></div>
+      <div class="sk-line sk-w80"></div>
+      <div class="sk-chips"><span></span><span></span><span></span></div>
+    </section>
+
+    <section id="resultado" class="card result" hidden tabindex="-1" aria-labelledby="resultado-titulo">
+      <h2 id="resultado-titulo" class="result-title">Respuesta</h2>
+      <p id="pregunta-eco" class="question-echo"></p>
+      <p id="respuesta" class="answer"></p>
+      <div id="fuentes" class="sources">
+        <h3 class="sources-title">Fuentes citadas <span class="hint">· pulsa para ver el texto literal</span></h3>
+        <ul id="citas" class="chip-list citations"></ul>
+        <div id="detalles"></div>
+      </div>
+    </section>
+
+    <section id="sin-base" class="card notice notice-warn" hidden tabindex="-1" aria-labelledby="sin-base-titulo">
+      <h2 id="sin-base-titulo" class="notice-title"><span aria-hidden="true">⚠️</span> Sin base en la norma</h2>
+      <p>No he encontrado ningún artículo del REBT que responda a <q id="sin-base-pregunta"></q>.
+        Prefiero no responder antes que inventar una cita.</p>
+      <ul class="notice-tips">
+        <li>Reformula con términos técnicos (p. ej. «toma de tierra», «derivación individual»).</li>
+        <li>NormaCita solo cubre el REBT (Real Decreto 842/2002 y sus ITC-BT).</li>
+      </ul>
+    </section>
+
+    <section id="error" class="card notice notice-error" hidden role="alert" aria-labelledby="error-titulo">
+      <h2 id="error-titulo" class="notice-title"><span aria-hidden="true">⛔</span> No se ha podido responder</h2>
+      <p id="error-msg"></p>
+      <button type="button" id="reintentar" class="btn btn-secondary">Reintentar</button>
+    </section>
   </main>
-  <script src="/static/app.js"></script>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p><strong>Herramienta orientativa: no es asesoramiento profesional.</strong>
+        No sustituye al texto oficial publicado en el BOE ni al criterio de un técnico cualificado.</p>
+      <p>Fuente: <a href="https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099" rel="noopener noreferrer" target="_blank">REBT consolidado (BOE-A-2002-18099)</a>
+        · Código: <a href="https://github.com/pedronavarro-labs/normacita" rel="noopener noreferrer" target="_blank">github.com/pedronavarro-labs/normacita</a>
+        · TFM de Pedro Navarro Arocha</p>
+    </div>
+  </footer>
+  <script src="/static/app.js" defer></script>
 </body>
 </html>
