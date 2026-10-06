@@ -63,7 +63,7 @@ sequenceDiagram
     API->>UC: execute(pregunta)
     UC->>R: search(pregunta, top_k)
     R-->>UC: fragmentos con puntuación
-    alt ninguno supera el umbral
+    alt no supera la puntuación mínima o la cobertura
         Note over UC: no se llama al LLM (coste 0)
         UC-->>API: Answer(sin_base=true)
     else hay base normativa
@@ -80,7 +80,7 @@ sequenceDiagram
 ```mermaid
 erDiagram
     FRAGMENTO {
-        string id "rebt-a4-2"
+        string id "boe-a-2002-18099-a4-2"
         string norma "REBT (Real Decreto 842/2002)…"
         string articulo "Artículo 4"
         string titulo "Clasificación de las tensiones…"

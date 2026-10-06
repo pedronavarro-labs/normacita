@@ -9,6 +9,7 @@
 | 📊 Slides (públicas) | `PENDIENTE — https://…` (borrador: [guion](docs/presentacion/GUION-SLIDES.md) · [.pptx](docs/presentacion/NormaCita-slides-BORRADOR.pptx)) |
 | 🎬 Vídeo de presentación | `PENDIENTE — https://…` (borrador del [guion](docs/presentacion/GUION-VIDEO.md)) |
 | 💻 Repositorio | https://github.com/pedronavarro-labs/normacita |
+| 📄 Memoria (opcional, borrador) | [docs/MEMORIA.md](docs/MEMORIA.md) |
 
 ## a. Descripción general
 Quienes trabajan con normativa técnica pierden tiempo buscando **qué artículo exacto** regula algo, y los chats de IA genéricos responden sin citar o inventan artículos. **NormaCita** responde preguntas en lenguaje natural **siempre con citas numeradas** al artículo y apartado del texto consolidado del BOE, con el fragmento literal y su enlace. Si el corpus no cubre la pregunta, **lo dice y no responde**.
@@ -104,7 +105,7 @@ normacita/
 ├── data/raw/rebt/         # XML oficial del BOE (82 ficheros: índice + 29 artículos + 52 ITC)
 ├── data/corpus/rebt.json  # Corpus REBT completo troceado por apartado
 ├── eval/preguntas.json    # 52 preguntas de evaluación con la cita esperada
-├── scripts/ingest_boe.py  # Ingesta desde la API de datos abiertos del BOE
+├── scripts/               # ingest_boe.py (BOE), generar_slides.py y generar_memoria.py (documentación)
 ├── tests/                 # 57 tests (unitarios, API, UI, ingesta y evaluación), sin red ni claves
 ├── docs/                  # Especificación, arquitectura, ADRs, evaluación, capturas (img/), presentación, registro de IA
 ├── .github/workflows/     # CI (lint, tests, Docker) + ingesta BOE manual
