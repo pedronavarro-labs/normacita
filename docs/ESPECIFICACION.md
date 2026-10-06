@@ -39,7 +39,7 @@ Como responsable del servicio, quiero validar las preguntas y limitar peticiones
 - Más de N peticiones/minuto por IP → HTTP 429 (N configurable).
 - Fallo del proveedor de IA → HTTP 502 con mensaje genérico (sin detalles internos).
 
-**HU-05 · Corpus REBT completo desde el BOE** ⏳
+**HU-05 · Corpus REBT completo desde el BOE** ✅ (v0.2: arts. 1-29 + ITC-BT-01…52, 832 fragmentos)
 Como administrador/a, quiero ingerir el REBT completo (articulado + ITC-BT) desde la API del BOE para que el asistente cubra la norma entera.
 - `scripts/ingest_boe.py` genera un JSON con todos los artículos divididos por apartado y la fecha de consulta.
 - El corpus indica la versión consolidada usada.
@@ -49,11 +49,11 @@ Como usuario/a, quiero respuestas redactadas (no solo extractos) cuando hay un p
 - Con `LLM_PROVIDER=openai_compatible` y credenciales válidas, la respuesta se genera con el prompt versionado y conserva las citas.
 - Sin credenciales, la app sigue funcionando en modo demo (*fake*).
 
-**HU-07 · Evaluación automática de calidad** ⏳
+**HU-07 · Evaluación automática de calidad** ✅ (v0.2: 52 preguntas, umbrales en CI; ver `docs/EVALUACION.md`)
 Como desarrollador, quiero un conjunto de ≥ 20 preguntas de referencia con su artículo esperado y medir la *precisión de cita* en CI.
 - `pytest -m eval` (o script) calcula *hit@k* del recuperador; el CI falla si baja de un umbral acordado (p. ej. 0,8).
 
-**HU-08 · Despliegue público** ⏳
+**HU-08 · Despliegue público** ⏳ (preparado: `render.yaml` + `DEPLOY.md`; falta crear la cuenta y desplegar)
 Como evaluador/a del TFM, quiero una URL pública para probar la app sin instalar nada.
 - URL en el README; `/health` responde 200; modo demo si no hay cuota de IA.
 

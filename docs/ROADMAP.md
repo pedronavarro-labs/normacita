@@ -12,29 +12,32 @@
 | ✅ Seguridad base (validación, rate limit, CSP, secretos por entorno) | 7 | C, D |
 | ✅ Dockerfile + workflow CI | 8 | D |
 
+## Avance v0.2 (06/10/2026)
+Repo público, corpus completo, evaluación en CI, BM25 mejorado y despliegue preparado. Detalle en las tablas (✅) y en `docs/REGISTRO-IA.md`.
+
 ## Semana 1 · Hazlo tuyo y publícalo
 | Tarea | Fase | Checklist |
 |---|---|---|
 | ⏳ Leer el código capa a capa y ejecutar los tests en tu máquina (README §c). Anota dudas en `REGISTRO-IA.md` | 0, 4 | D («entiendes el código») |
 | ⏳ Revisar `DECISION.md` y `ESPECIFICACION.md`: ajustar persona, nicho y alcance a tu experiencia real | 1, 2 | B |
-| ⏳ Cambiar el autor de los commits a tu nombre si quieres (`git commit --amend --reset-author` o rebase) y crear el **repo público en GitHub** | 4 | C |
-| ⏳ Confirmar que el CI de GitHub Actions pasa en verde | 8 | D |
-| ⏳ Ejecutar `scripts/ingest_boe.py` para el REBT completo (artículos) y revisar el JSON | 5 | B (HU-05) |
+| ✅ Autor de los commits a tu nombre y **repo público en GitHub** (<https://github.com/pedronavarro-labs/normacita>) | 4 | C |
+| ✅ CI de GitHub Actions en verde (lint, 51 tests con umbrales de evaluación, build + smoke test Docker) | 8 | D |
+| ✅ REBT completo ingerido desde el XML oficial del BOE (arts. 1-29 + ITC-BT-01…52, 832 fragmentos) vía workflow «Ingesta BOE (manual)». ⏳ Revísalo por encima (algunas ITC con tablas largas) | 5 | B (HU-05) |
 | ⏳ Confirmar la fecha límite de entrega y si eres alumno Fundae | 0 | A |
 
 ## Semana 2 · IA real y calidad medible
 | Tarea | Fase | Checklist |
 |---|---|---|
 | ⏳ Crear clave de un proveedor gratuito (Gemini/Groq/OpenRouter) y probar `LLM_PROVIDER=openai_compatible` en local (HU-06) | 5 | D |
-| ⏳ Conjunto de evaluación: ≥ 20 preguntas reales con su artículo esperado (`data/eval/preguntas.json`) + test `hit@k` (HU-07) | 6 | D |
-| ⏳ Ajustar `RETRIEVAL_MIN_SCORE` y `top_k` con datos de la evaluación | 5, 6 | D |
-| ⏳ Ingerir las ITC-BT (bloques `ib…` del índice del BOE) y añadir filtro por norma | 5 | B |
+| ✅ Conjunto de evaluación: 52 preguntas (42 con cita + 10 fuera de ámbito; subconjuntos ajuste/validación) en `eval/preguntas.json` + umbrales en CI (HU-07, `docs/EVALUACION.md`). ⏳ Ampliar con preguntas reales y negativas «cercanas» | 6 | D |
+| ✅ Mejoras de BM25 medidas (stemming, campo título, exclusiones, prior, umbral de cobertura): hit@1 0.548→0.714, hit@3 0.738→0.952, negativas 0.30→1.00 | 5, 6 | D |
+| ✅ ITC-BT ingeridas · ⏳ filtro por norma/ITC en la UI | 5 | B |
 | ⭐ Búsqueda híbrida (embeddings + RRF) si la evaluación muestra fallos por sinónimos (ADR-0003) | 5 | D |
 
 ## Semana 3 · Seguridad, despliegue y observabilidad
 | Tarea | Fase | Checklist |
 |---|---|---|
-| ⏳ Desplegar en Render o Fly.io con el Dockerfile; variables `LLM_*` en el panel (nunca en el repo) | 8 | E |
+| 🟡 Despliegue **preparado** (`render.yaml`, `DEPLOY.md`). ⏳ 👤 Crear cuenta en Render y aplicar el Blueprint; variables `LLM_*` en el panel (nunca en el repo) | 8 | E |
 | ⏳ Añadir CD: despliegue automático desde `main` tras CI verde | 8 | D |
 | ⏳ Tests adversarios de prompt injection (preguntas que intentan saltarse las reglas) | 7 | D (OWASP LLM) |
 | ⏳ gitleaks + pip-audit/Dependabot en CI; CORS restringido | 7 | C, D |
