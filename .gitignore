@@ -1,0 +1,22 @@
+# Entornos y cachés
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+
+# Secretos: NUNCA subir .env (usa .env.example como plantilla)
+.env
+.env.*
+!.env.example
+
+# Editor / SO
+.DS_Store
+.idea/
+.vscode/
