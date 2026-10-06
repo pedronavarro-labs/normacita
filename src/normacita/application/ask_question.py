@@ -14,7 +14,7 @@ from __future__ import annotations
 import re
 
 from normacita.application.ports import LLMProvider, Retriever
-from normacita.domain.models import Answer, Citation
+from normacita.domain.models import Answer, Citation, ScoredFragment
 
 NO_BASIS_MESSAGE = (
     "No he encontrado ningún artículo del corpus cargado que responda a esta pregunta. "
@@ -26,17 +26,28 @@ _MARKER = re.compile(r"\[(\d{1,2})\]")
 
 class AskQuestion:
     def __init__(
-        self, retriever: Retriever, llm: LLMProvider, top_k: int = 4, min_score: float = 1.0
+        self,
+        retriever: Retriever,
+        llm: LLMProvider,
+        top_k: int = 4,
+        min_score: float = 1.0,
+        min_coverage: float = 0.0,
     ) -> None:
         self._retriever = retriever
         self._llm = llm
         self._top_k = top_k
         self._min_score = min_score
+        self._min_coverage = min_coverage
+
+    def relevant(self, question: str) -> list[ScoredFragment]:
+        """Fragmentos que superan los umbrales de puntuación y de cobertura."""
+        hits = self._retriever.search(question, self._top_k)
+        if not hits or hits[0].coverage < self._min_coverage:
+            return []  # el mejor resultado no cubre la pregunta: no hay base
+        return [h for h in hits if h.score >= self._min_score]
 
     def execute(self, question: str) -> Answer:
-        hits = [
-            h for h in self._retriever.search(question, self._top_k) if h.score >= self._min_score
-        ]
+        hits = self.relevant(question)
         if not hits:
             return Answer(texto=NO_BASIS_MESSAGE, sin_base=True, proveedor=self._llm.name)
 

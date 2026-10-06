@@ -33,10 +33,16 @@ class Fragment:
 
 @dataclass(frozen=True)
 class ScoredFragment:
-    """Fragmento devuelto por el recuperador con su puntuación de relevancia."""
+    """Fragmento devuelto por el recuperador.
+
+    - `score`: relevancia (mayor = mejor; escala propia del recuperador).
+    - `coverage`: fracción (0-1) del peso de la pregunta presente en el fragmento.
+      Sirve para detectar preguntas ajenas al corpus que solo coinciden por azar.
+    """
 
     fragment: Fragment
     score: float
+    coverage: float = 1.0
 
 
 @dataclass(frozen=True)

@@ -41,6 +41,7 @@ class Settings:
     corpus_path: Path = PROJECT_ROOT / "data" / "corpus" / "rebt.json"
     retrieval_top_k: int = 4
     retrieval_min_score: float = 1.0
+    retrieval_min_coverage: float = 0.3
     rate_limit_per_minute: int = 20
     cors_origins: tuple[str, ...] = ()
 
@@ -57,6 +58,7 @@ class Settings:
             corpus_path=corpus,
             retrieval_top_k=_int("RETRIEVAL_TOP_K", 4),
             retrieval_min_score=_float("RETRIEVAL_MIN_SCORE", 1.0),
+            retrieval_min_coverage=_float("RETRIEVAL_MIN_COVERAGE", 0.3),
             rate_limit_per_minute=_int("RATE_LIMIT_PER_MINUTE", 20),
             cors_origins=origins,
         )

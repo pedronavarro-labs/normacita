@@ -58,3 +58,18 @@ def test_sin_marcadores_devuelve_todo_el_contexto():
     hits = [ScoredFragment(_frag(i), 5.0) for i in (1, 2)]
     answer = AskQuestion(StubRetriever(hits), StubLLM("Respuesta sin citas.")).execute("p")
     assert [c.numero for c in answer.citas] == [1, 2]
+
+
+def test_cobertura_insuficiente_cuenta_como_sin_base():
+    """Si el mejor fragmento solo casa con una parte menor de la pregunta, no se responde."""
+    llm = StubLLM("x")
+    hits = [ScoredFragment(_frag(1), 5.0, coverage=0.1)]
+    answer = AskQuestion(StubRetriever(hits), llm, min_coverage=0.3).execute("hola")
+    assert answer.sin_base and llm.calls == 0
+
+
+def test_cobertura_suficiente_si_responde():
+    llm = StubLLM("Respuesta [1].")
+    hits = [ScoredFragment(_frag(1), 5.0, coverage=0.8)]
+    answer = AskQuestion(StubRetriever(hits), llm, min_coverage=0.3).execute("hola")
+    assert not answer.sin_base and llm.calls == 1

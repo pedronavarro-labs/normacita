@@ -38,7 +38,13 @@ def create_app(
     if retriever is None:
         retriever = BM25Retriever(load_corpus(settings.corpus_path))
     llm = llm or build_llm_provider(settings)
-    ask = AskQuestion(retriever, llm, settings.retrieval_top_k, settings.retrieval_min_score)
+    ask = AskQuestion(
+        retriever,
+        llm,
+        settings.retrieval_top_k,
+        settings.retrieval_min_score,
+        settings.retrieval_min_coverage,
+    )
     limiter = RateLimiter(settings.rate_limit_per_minute)
 
     app = FastAPI(title="NormaCita", version=__version__)
