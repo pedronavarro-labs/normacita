@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NormaCita · Normativa técnica con citas</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>NormaCita</h1>
+      <p>Pregunta sobre el <strong>REBT</strong> (muestra de artículos) y obtén una respuesta con citas verificables.</p>
+    </header>
+    <form id="ask-form">
+      <label for="pregunta">Tu pregunta</label>
+      <textarea id="pregunta" name="pregunta" minlength="3" maxlength="500" required
+        placeholder="¿Qué se considera baja tensión?"></textarea>
+      <button type="submit">Preguntar</button>
+    </form>
+    <section id="resultado" aria-live="polite" hidden>
+      <h2>Respuesta</h2>
+      <p id="respuesta"></p>
+      <h3>Fuentes</h3>
+      <ol id="citas"></ol>
+    </section>
+    <p id="error" role="alert" hidden></p>
+    <footer>Orientativo. No sustituye al texto oficial publicado en el BOE.</footer>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>

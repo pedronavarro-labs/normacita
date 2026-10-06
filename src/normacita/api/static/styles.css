@@ -1,0 +1,13 @@
+body { font-family: system-ui, sans-serif; margin: 0; background: #f6f7f9; color: #1d2330; }
+main { max-width: 760px; margin: 2rem auto; padding: 0 1rem; }
+h1 { margin-bottom: .2rem; }
+form { display: grid; gap: .5rem; margin: 1.5rem 0; }
+textarea { min-height: 5rem; padding: .6rem; font: inherit; border: 1px solid #c5cad3; border-radius: 6px; }
+button { justify-self: start; padding: .5rem 1.2rem; border: 0; border-radius: 6px; background: #1f5eff; color: #fff; font: inherit; cursor: pointer; }
+button:disabled { opacity: .6; cursor: wait; }
+#resultado { background: #fff; padding: 1rem 1.2rem; border-radius: 8px; box-shadow: 0 1px 3px #0001; }
+#citas li { margin-bottom: .8rem; }
+#citas blockquote { margin: .3rem 0; padding-left: .8rem; border-left: 3px solid #c5cad3; color: #444; font-size: .9rem; }
+#error { color: #b00020; }
+.sin-base { color: #8a5a00; }
+footer { margin-top: 2rem; font-size: .85rem; color: #666; }
