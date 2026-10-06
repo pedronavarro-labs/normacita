@@ -1,0 +1,33 @@
+# Blueprint de Render para NormaCita (https://render.com/docs/blueprint-spec)
+# Uso: Render → New → Blueprint → elegir este repositorio. Ver DEPLOY.md.
+# Arranca en MODO DEMO (LLM_PROVIDER=fake): funciona sin ninguna clave.
+services:
+  - type: web
+    name: normacita
+    runtime: docker # construye con el Dockerfile del repo (usuario no root)
+    plan: free # instancia gratuita: se duerme tras ~15 min sin tráfico
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeploy: true # redeploy en cada push a la rama enlazada
+    envVars:
+      # Render inyecta PORT; el Dockerfile ya escucha en ${PORT}.
+      - key: LLM_PROVIDER
+        value: fake # cambia a openai_compatible cuando tengas clave (DEPLOY.md §3)
+      - key: LLM_BASE_URL
+        sync: false # se pide en el panel; nunca en el repo
+      - key: LLM_API_KEY
+        sync: false # secreto: solo en el panel de Render
+      - key: LLM_MODEL
+        sync: false
+      - key: LLM_TIMEOUT_SECONDS
+        value: "30"
+      - key: CORPUS_PATH
+        value: data/corpus/rebt.json
+      - key: RETRIEVAL_TOP_K
+        value: "4"
+      - key: RETRIEVAL_MIN_SCORE
+        value: "1.0"
+      - key: RETRIEVAL_MIN_COVERAGE
+        value: "0.3"
+      - key: RATE_LIMIT_PER_MINUTE
+        value: "20"
