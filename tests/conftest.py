@@ -10,7 +10,7 @@ from normacita.config import PROJECT_ROOT, Settings
 from normacita.infrastructure.bm25_retriever import BM25Retriever
 from normacita.infrastructure.corpus_loader import load_corpus
 
-CORPUS = PROJECT_ROOT / "data" / "corpus" / "rebt_muestra.json"
+CORPUS = PROJECT_ROOT / "data" / "corpus" / "rebt.json"
 
 
 @pytest.fixture(scope="session")

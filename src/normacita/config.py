@@ -38,7 +38,7 @@ class Settings:
     llm_api_key: str = field(default="", repr=False)  # repr=False: no aparece en logs
     llm_model: str = ""
     llm_timeout_seconds: float = 30.0
-    corpus_path: Path = PROJECT_ROOT / "data" / "corpus" / "rebt_muestra.json"
+    corpus_path: Path = PROJECT_ROOT / "data" / "corpus" / "rebt.json"
     retrieval_top_k: int = 4
     retrieval_min_score: float = 1.0
     rate_limit_per_minute: int = 20
@@ -46,7 +46,7 @@ class Settings:
 
     @classmethod
     def from_env(cls) -> Settings:
-        corpus = _resolve(Path(os.getenv("CORPUS_PATH", "data/corpus/rebt_muestra.json")))
+        corpus = _resolve(Path(os.getenv("CORPUS_PATH", "data/corpus/rebt.json")))
         origins = tuple(o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip())
         return cls(
             llm_provider=os.getenv("LLM_PROVIDER", "fake").strip().lower(),

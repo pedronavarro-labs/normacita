@@ -29,6 +29,7 @@ import json
 import re
 import sys
 import time
+import unicodedata
 import xml.etree.ElementTree as ET  # noqa: N817
 from pathlib import Path
 
@@ -58,6 +59,35 @@ def _ultima_version(xml: str) -> tuple[ET.Element | None, ET.Element | None]:
     return bloque, (versiones[-1] if versiones else None)  # vigente = la última
 
 
+def _parrafos(version: ET.Element) -> list[tuple[str, str]]:
+    """Recorre la versión en orden y devuelve (clase, texto).
+
+    - Las tablas se linealizan: una línea por fila con celdas separadas por " | ".
+    - Se omiten las notas editoriales del BOE (``blockquote``, ``nota_pie``) y las
+      imágenes (no tienen texto; quedan fuera del corpus).
+    """
+    salida: list[tuple[str, str]] = []
+    for el in version:
+        if el.tag == "p":
+            clase = el.get("class", "")
+            texto = _text(el)
+            if texto and not clase.startswith("nota") and clase != "imagen":
+                salida.append((clase, texto))
+        elif el.tag == "table":
+            for fila in el.iter("tr"):
+                celdas = [_text(c) for c in fila if c.tag in ("td", "th")]
+                linea = " | ".join(c for c in celdas if c)
+                if linea:
+                    salida.append(("tabla_fila", linea))
+    return salida
+
+
+def _clave(texto: str) -> str:
+    """Normaliza un encabezado para compararlo con el índice (sin tildes ni signos)."""
+    t = unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode().lower()
+    return re.sub(r"[^a-z0-9]", "", t)
+
+
 def _trocear(texto: str) -> list[str]:
     """Divide un texto largo por frases en trozos de <= _MAX_CHARS."""
     if len(texto) <= _MAX_CHARS:
@@ -74,6 +104,36 @@ def _trocear(texto: str) -> list[str]:
     return trozos
 
 
+def _fragmentos(
+    id_norma: str,
+    norma: str,
+    bloque_id: str,
+    articulo: str,
+    secciones: dict[str, list[str]],
+    titulos: dict[str, str],
+    titulo_defecto: str,
+) -> list[dict[str, str]]:
+    url = f"https://www.boe.es/buscar/act.php?id={id_norma}#{bloque_id}"
+    out = []
+    for sec, partes in secciones.items():
+        trozos = _trocear(" ".join(partes))
+        for i, trozo in enumerate(trozos, start=1):
+            ascii_sec = unicodedata.normalize("NFKD", sec).encode("ascii", "ignore").decode()
+            slug = re.sub(r"[^a-z0-9.]+", "-", ascii_sec.lower()).strip("-") or "x"
+            out.append(
+                {
+                    "id": f"{id_norma.lower()}-{bloque_id}-{slug}" + (f"-p{i}" if i > 1 else ""),
+                    "norma": norma,
+                    "articulo": articulo,
+                    "titulo": titulos.get(sec, titulo_defecto),
+                    "apartado": sec if len(trozos) == 1 else f"{sec} (parte {i}/{len(trozos)})",
+                    "texto": trozo,
+                    "url": url,
+                }
+            )
+    return out
+
+
 def parse_articulo(xml: str, id_norma: str, norma: str) -> list[dict[str, str]]:
     """Bloque de artículo → un fragmento por apartado ("1.", "2."…)."""
     bloque, ultima = _ultima_version(xml)
@@ -83,11 +143,7 @@ def parse_articulo(xml: str, id_norma: str, norma: str) -> list[dict[str, str]]:
     articulo, titulo = bloque.get("titulo", bloque_id), ""
     apartados: dict[str, list[str]] = {}
     actual = "único"
-    for p in ultima.iter("p"):
-        texto = _text(p)
-        clase = p.get("class", "")
-        if not texto or clase.startswith("nota"):
-            continue
+    for clase, texto in _parrafos(ultima):
         if clase == "articulo":
             m = _HEADING.match(texto)
             if m:
@@ -97,66 +153,69 @@ def parse_articulo(xml: str, id_norma: str, norma: str) -> list[dict[str, str]]:
         if m:
             actual = m.group(1)
         apartados.setdefault(actual, []).append(texto)
-    url = f"https://www.boe.es/buscar/act.php?id={id_norma}#{bloque_id}"
-    return [
-        {
-            "id": f"{id_norma.lower()}-{bloque_id}-{ap}",
-            "norma": norma,
-            "articulo": articulo,
-            "titulo": titulo,
-            "apartado": ap,
-            "texto": " ".join(partes),
-            "url": url,
-        }
-        for ap, partes in apartados.items()
-    ]
+    return _fragmentos(id_norma, norma, bloque_id, articulo, apartados, {}, titulo)
 
 
 def parse_itc(xml: str, id_norma: str, norma: str) -> list[dict[str, str]]:
-    """Bloque de ITC-BT → un fragmento por sección numerada de primer nivel.
+    """Bloque de ITC-BT → un fragmento por sección numerada (1, 2.1, 2.3.1…).
 
-    Las ITC se estructuran como "1. OBJETO", "2. CAMPO DE APLICACIÓN", "2.1 …".
-    Agrupamos por la sección principal (1, 2, 3…) y troceamos si es muy larga.
+    Las ITC empiezan con "0. ÍNDICE" y la lista de secciones; esas entradas son la
+    referencia fiable para reconocer los encabezados en el cuerpo. Si no hay índice
+    (p. ej. ITC-BT-01, Terminología), se usan los términos en MAYÚSCULAS como sección.
     """
     bloque, ultima = _ultima_version(xml)
     if bloque is None or ultima is None:
         return []
     bloque_id = bloque.get("id", "")
     itc = bloque.get("titulo", bloque_id)  # "ITC-BT-19"
-    titulo_itc = ""
+    parrafos = _parrafos(ultima)
+    titulo_itc = next((t for c, t in parrafos if c in ("anexo_tit", "titulo_tit")), "")
+    cuerpo = [(c, t) for c, t in parrafos if c not in ("anexo_num", "anexo_tit", "titulo_tit")]
+
+    # 1) Extraer el índice (si existe) y quitarlo del cuerpo.
+    indice: list[str] = []
+    if cuerpo and re.match(r"^0\.?\s*[ÍI]NDICE", cuerpo[0][1], re.IGNORECASE):
+        i = 1
+        while i < len(cuerpo) and cuerpo[i][1] not in indice and _SECCION_ITC.match(cuerpo[i][1]):
+            indice.append(cuerpo[i][1])
+            i += 1
+        cuerpo = cuerpo[i:]
+    # Números de sección del índice ("1", "2.1", "2.3.1"…): un párrafo del cuerpo que
+    # empieza por uno de ellos (y es corto) es su encabezado. Comparamos por número y
+    # no por texto exacto porque a veces difiere en puntuación.
+    numeros = {m.group(1): _clave(e[m.end(1) :]) for e in indice if (m := _SECCION_ITC.match(e))}
+
     secciones: dict[str, list[str]] = {}
     titulos: dict[str, str] = {}
-    actual = "0"
-    for p in ultima.iter("p"):
-        texto = _text(p)
-        clase = p.get("class", "")
-        if not texto or clase.startswith("nota") or clase == "cita_con_pleca":
-            continue
-        if not titulo_itc and clase.startswith("centro_negrita") and not texto.startswith("ITC"):
-            titulo_itc = texto.title() if texto.isupper() else texto
-            continue
-        m = _SECCION_ITC.match(texto)
-        if m and ("." not in m.group(1)) and len(texto) < 160:
-            actual = m.group(1)
-            titulos.setdefault(actual, texto)
+    actual = "preliminar"
+    for clase, texto in cuerpo:
+        m = None if clase == "tabla_fila" else _SECCION_ITC.match(texto)
+        seccion = None
+        if clase == "tabla_fila":
+            pass  # las filas de tabla nunca son encabezados
+        elif numeros:
+            num = m.group(1) if m else ""
+            resto = texto[m.end(1) :].strip(". ") if m else ""
+            coincide = _clave(resto)[:12] == numeros.get(num, "#")[:12]
+            mayusculas = resto.isupper() and "." not in num  # "4. INSTALADOR EN BAJA TENSIÓN"
+            if m and num not in titulos and len(texto) < 200 and (coincide or mayusculas):
+                seccion = num
+        elif m and len(texto) < 160 and texto[len(m.group(1)) :].strip(". ").isupper():
+            seccion = m.group(1)
+        elif (
+            not m
+            and clase.startswith("parrafo")
+            and texto.isupper()
+            and len(texto) < 90
+            and not texto.endswith(":")
+        ):
+            # ITC sin índice (Terminología): cada término en MAYÚSCULAS es una sección.
+            seccion = texto.capitalize()
+        if seccion:
+            actual = seccion
+            titulos[seccion] = texto[len(m.group(1)) :].strip(". ") if m else seccion
         secciones.setdefault(actual, []).append(texto)
-    url = f"https://www.boe.es/buscar/act.php?id={id_norma}#{bloque_id}"
-    fragmentos = []
-    for sec, partes in secciones.items():
-        for i, trozo in enumerate(_trocear(" ".join(partes)), start=1):
-            ap = sec if i == 1 else f"{sec} (parte {i})"
-            fragmentos.append(
-                {
-                    "id": f"{id_norma.lower()}-{bloque_id}-{sec}-{i}",
-                    "norma": norma,
-                    "articulo": itc,
-                    "titulo": titulos.get(sec, titulo_itc) or titulo_itc,
-                    "apartado": ap if sec != "0" else "preliminar",
-                    "texto": trozo,
-                    "url": url,
-                }
-            )
-    return fragmentos
+    return _fragmentos(id_norma, norma, bloque_id, itc, secciones, titulos, titulo_itc)
 
 
 def parse_indice(xml: str, incluir_itc: bool = True) -> list[str]:

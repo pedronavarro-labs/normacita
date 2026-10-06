@@ -23,9 +23,12 @@ class Fragment:
 
     @property
     def referencia(self) -> str:
-        """Referencia legible, p. ej. 'Artículo 4.2 (Clasificación de las tensiones…)'."""
-        ap = "" if self.apartado in ("", "único") else f".{self.apartado}"
-        return f"{self.articulo}{ap} ({self.titulo})"
+        """Referencia legible: 'Artículo 4.2 (…)' o 'ITC-BT-25, apdo. 2.3.1 (…)'."""
+        if self.apartado in ("", "único"):
+            return f"{self.articulo} ({self.titulo})"
+        if self.articulo.startswith("Artículo"):
+            return f"{self.articulo}.{self.apartado} ({self.titulo})"
+        return f"{self.articulo}, apdo. {self.apartado} ({self.titulo})"  # ITC-BT-25, apdo. 2.3.1
 
 
 @dataclass(frozen=True)

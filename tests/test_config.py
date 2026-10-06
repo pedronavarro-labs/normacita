@@ -7,12 +7,12 @@ def test_from_env_lee_variables(monkeypatch):
     monkeypatch.setenv("RETRIEVAL_TOP_K", "2")
     monkeypatch.setenv("RETRIEVAL_MIN_SCORE", "0.5")
     monkeypatch.setenv("CORS_ORIGINS", "https://a.es, https://b.es")
-    monkeypatch.setenv("CORPUS_PATH", "data/corpus/rebt_muestra.json")
+    monkeypatch.setenv("CORPUS_PATH", "data/corpus/rebt.json")
     s = Settings.from_env()
     assert s.llm_provider == "openai_compatible"
     assert s.retrieval_top_k == 2 and s.retrieval_min_score == 0.5
     assert s.cors_origins == ("https://a.es", "https://b.es")
-    assert s.corpus_path == PROJECT_ROOT / "data/corpus/rebt_muestra.json"
+    assert s.corpus_path == PROJECT_ROOT / "data/corpus/rebt.json"
 
 
 def test_from_env_valores_por_defecto(monkeypatch):

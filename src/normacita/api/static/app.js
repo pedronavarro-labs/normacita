@@ -34,7 +34,9 @@ form.addEventListener("submit", async (event) => {
     for (const c of data.citas) {
       const li = el("li");
       li.value = c.numero;
-      const link = el("a", `${c.articulo}${c.apartado && c.apartado !== "único" ? "." + c.apartado : ""} · ${c.titulo}`);
+      const apdo = !c.apartado || c.apartado === "único" ? ""
+        : c.articulo.startsWith("Artículo") ? `.${c.apartado}` : `, apdo. ${c.apartado}`;
+      const link = el("a", `${c.articulo}${apdo} · ${c.titulo}`);
       // Solo enlazamos a URLs https (defensa adicional ante datos manipulados).
       if (c.url.startsWith("https://")) { link.href = c.url; link.target = "_blank"; link.rel = "noopener noreferrer"; }
       li.append(link, el("blockquote", c.texto));
