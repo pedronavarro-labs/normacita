@@ -4,7 +4,7 @@
 
 | Fecha | Herramienta / agente | Qué se pidió | Qué se generó | Revisión humana / cambios |
 |---|---|---|---|---|
-| 2026-10-06 | Grok Bot (asistente de Pedro) | Elegir una idea entre 5 con criterios y arrancar el proyecto | `DECISION.md`, especificación, arquitectura, ADR-0001…0004, roadmap, walking skeleton (FastAPI, BM25, proveedores LLM fake y OpenAI-compatible, UI, 30 tests, Dockerfile, CI) y muestra del corpus REBT (18 apartados copiados del BOE) | ⏳ Pendiente de que Pedro revise y ajuste. Los commits iniciales figuran con el autor «Grok Bot (asistente de Pedro)» |
+| 2026-10-06 | Grok Bot (asistente de Pedro) | Elegir una idea entre 5 con criterios y arrancar el proyecto | `DECISION.md`, especificación, arquitectura, ADR-0001…0004, roadmap, walking skeleton (FastAPI, BM25, proveedores LLM fake y OpenAI-compatible, UI, 30 tests, Dockerfile, CI) y muestra del corpus REBT (18 apartados copiados del BOE) | ⏳ Pendiente de que Pedro revise y ajuste. Commits iniciales generados con asistente IA y reasignados al autor (Pedro) antes de publicar |
 
 ## Cómo usar este registro
 - Anota los prompts importantes (o el enlace a la conversación), las decisiones que tomaste **tú** y lo que corregiste.
