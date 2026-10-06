@@ -1,8 +1,8 @@
 # NormaCita · Memoria del Trabajo Fin de Máster
 
-> Documento complementario: el PDF oficial no exige memoria y la defensa del proyecto son el README y las slides. Redactado en primera persona con ayuda de un asistente de IA a partir de la documentación y el historial del repositorio (ver `docs/REGISTRO-IA.md`).
-> Todos los datos y métricas salen del repositorio a fecha de 06/10/2026 (`README.md`, `docs/`, `tests/`, `.github/workflows/`). Si cambian, actualiza esta memoria.
-> Este documento se regenera en `.docx` (y PDF opcional) con `scripts/generar_memoria.py`, que convierte los diagramas Mermaid en imágenes.
+> Este documento es complementario: el PDF oficial del máster no pide memoria y la defensa del proyecto son el README y las slides. La he escrito en primera persona con ayuda de un asistente de IA, partiendo de la documentación y del historial del repositorio (ver `docs/REGISTRO-IA.md`).
+> Los datos y métricas son los del repositorio a 06/10/2026 (`README.md`, `docs/`, `tests/`, `.github/workflows/`). Si cambian, hay que actualizar esta memoria.
+> El `.docx` (y el PDF, si se quiere) se genera con `scripts/generar_memoria.py`, que convierte los diagramas Mermaid en imágenes.
 
 | | |
 |---|---|
@@ -17,11 +17,11 @@
 
 ## Resumen
 
-NormaCita responde preguntas en lenguaje natural sobre el **Reglamento Electrotécnico para Baja Tensión** (REBT, Real Decreto 842/2002, BOE-A-2002-18099). Cada respuesta va acompañada de **citas numeradas al artículo o apartado exacto** del texto consolidado del BOE, con el fragmento literal y su enlace. Si la norma no cubre la pregunta, el sistema **lo dice y no responde**.
+NormaCita responde preguntas sobre el Reglamento Electrotécnico para Baja Tensión (REBT, Real Decreto 842/2002, BOE-A-2002-18099). En cada respuesta indica el artículo o apartado exacto del texto consolidado del BOE del que sale, con el fragmento literal y el enlace. Cuando la norma no cubre la pregunta, no responde y lo dice.
 
-Técnicamente es una aplicación RAG (*retrieval-augmented generation*) con arquitectura hexagonal en Python y FastAPI. El corpus completo (29 artículos y 52 ITC-BT, 832 fragmentos) se genera desde la API de datos abiertos del BOE. La búsqueda usa un BM25 propio en Python puro, con umbrales de puntuación y cobertura para decidir cuándo no hay base. El modelo de lenguaje es intercambiable (cualquier API compatible con OpenAI) y existe un **modo demo** sin claves.
+Por dentro es una aplicación RAG (*retrieval-augmented generation*) en Python con FastAPI y arquitectura hexagonal. El corpus completo, 29 artículos y 52 ITC-BT en 832 fragmentos, se genera desde la API de datos abiertos del BOE. Para buscar uso un BM25 escrito en Python puro, con dos umbrales (puntuación y cobertura) que deciden cuándo no hay base. El modelo de lenguaje se puede cambiar por cualquier API compatible con OpenAI, y hay un modo demo que funciona sin claves.
 
-La calidad se mide con 57 tests automáticos (94 % de cobertura del código Python) y una evaluación de 52 preguntas que corre en CI. Tras mejorar la búsqueda: hit@1 0,714, hit@3 0,952 y rechazo correcto de preguntas fuera de ámbito 1,00. En el subconjunto de validación, el hit@1 es 0,50 y el hit@3 0,917.
+La calidad la controlo con 57 tests automáticos, que cubren el 94 % del código Python, y con una evaluación de 52 preguntas que se ejecuta en el CI. Después de mejorar la búsqueda, el hit@1 es 0,714, el hit@3 0,952 y el rechazo de preguntas fuera de ámbito 1,00. En el subconjunto de validación los números son más modestos: hit@1 0,50 y hit@3 0,917.
 
 **Palabras clave:** RAG, BM25, citas verificables, IA responsable, OWASP LLM, FastAPI, arquitectura hexagonal, normativa técnica.
 
@@ -43,35 +43,35 @@ La calidad se mide con 57 tests automáticos (94 % de cobertura del código Pyth
 
 ## 1. Introducción y motivación
 
-Quienes trabajan con normativa técnica (instaladores, ingenieros, técnicos, estudiantes) dedican mucho tiempo a localizar **qué apartado exacto** regula algo. El REBT tiene 29 artículos y 52 instrucciones técnicas complementarias, con modificaciones a lo largo de los años. Los asistentes de IA genéricos responden con seguridad, pero sin citar o citando artículos que no existen, y en un ámbito regulado una respuesta sin fuente no sirve.
+El REBT tiene 29 artículos y 52 instrucciones técnicas complementarias, y se ha ido modificando con los años. Quien trabaja con él, sea instalador, ingeniero, técnico o estudiante, pierde bastante tiempo buscando el apartado exacto que regula algo. Los asistentes de IA genéricos contestan con mucha seguridad, pero sin citar o citando artículos que no existen. En un ámbito regulado una respuesta así vale poco.
 
-Elegí esta idea entre cinco candidatas con una tabla de criterios ponderados (originalidad, viabilidad en unas cuatro semanas, despliegue gratuito, valor medible de la IA, arquitectura, testabilidad, seguridad, CI/CD y encaje con mi perfil). Obtuvo la mayor puntuación (90 sobre 100; detalle en `DECISION.md` de la carpeta del TFM). Lo que más pesó es que **la IA aporta un valor que se puede medir** (la precisión de la cita) y que el «no respondo sin fuente» es una funcionalidad diferencial.
+La idea salió de comparar cinco candidatas con una tabla de criterios ponderados: originalidad, viabilidad en unas cuatro semanas, despliegue gratuito, que el valor de la IA se pudiera medir, arquitectura, testabilidad, seguridad, CI/CD y encaje con mi perfil. Fue la que más puntuó (90 sobre 100; el detalle está en `DECISION.md`, en la carpeta del TFM). Lo que más pesó es que aquí lo que aporta la IA se puede medir, porque la cita es correcta o no lo es. Y que negarse a responder cuando no hay fuente es justo lo que no hacen los chats genéricos.
 
-Mi motivación viene de mi perfil profesional: estudié el ciclo superior de ASIR (Administración de Sistemas Informáticos en Red) y trabajo como analista de ciberseguridad. Estoy acostumbrado a consultar normativa y a justificar cada decisión con su referencia, y sé lo que cuesta localizar el apartado exacto dentro de un texto largo. Quería una herramienta que ahorrase ese tiempo sin perder rigor: que no solo respondiera, sino que enseñara de dónde sale cada respuesta y que reconociera cuándo la norma no dice nada. Ese mismo perfil explica el peso de la seguridad en el proyecto: al ser una aplicación pública que llama a un modelo de lenguaje, la diseñé siguiendo el OWASP Top 10 para LLM, con rechazo de la inyección de prompt y validación de las citas.
+Estudié el ciclo superior de ASIR (Administración de Sistemas Informáticos en Red) y trabajo como analista de ciberseguridad. Estoy acostumbrado a consultar normativa y a justificar cada decisión con su referencia, así que sé lo que cuesta dar con el apartado concreto dentro de un texto largo. [PEDRO: si quieres, añade aquí un ejemplo real de tu trabajo: una norma o una situación en la que tuviste que buscar el apartado exacto para justificar algo.] Quería una herramienta que ahorrase ese rato sin perder rigor, que enseñara de dónde sale cada respuesta y que reconociera cuándo la norma no dice nada.
+
+Mi trabajo también explica que la seguridad pese tanto en el proyecto. Es una aplicación pública que llama a un modelo de lenguaje, así que la diseñé siguiendo el OWASP Top 10 para LLM. Entre otras cosas, rechaza la inyección de prompt y valida las citas antes de enseñarlas.
 
 ## 2. Objetivos
 
-**Objetivo general:** construir y desplegar una aplicación que responda dudas sobre el REBT citando siempre la fuente oficial, y que demuestre lo aprendido en el máster: arquitectura, IA aplicada, calidad, seguridad y CI/CD.
+El objetivo general era construir y desplegar una aplicación que resolviera dudas sobre el REBT citando siempre la fuente oficial, y de paso demostrar lo aprendido en el máster en arquitectura, IA aplicada, calidad, seguridad y CI/CD.
 
-**Objetivos específicos:**
+Los objetivos concretos y en qué punto están:
 
 | Id | Objetivo | Estado |
 |---|---|---|
-| O1 | Respuestas con citas numeradas al artículo/apartado y enlace al BOE | ✅ Hecho (HU-01, HU-03) |
-| O2 | No responder ni llamar al LLM cuando no hay base normativa | ✅ Hecho (HU-02) |
-| O3 | Corpus completo del REBT desde la fuente oficial | ✅ Hecho (HU-05): 29 artículos + 52 ITC-BT |
-| O4 | Calidad medible: tests y evaluación automática en CI | ✅ Hecho (HU-07): 57 tests, 52 preguntas |
-| O5 | Seguridad web y OWASP Top 10 para LLM | ✅ Controles base (HU-04, ADR-0004) |
-| O6 | Proveedor de IA intercambiable y modo demo sin claves | ✅ Hecho (ADR-0002); ⏳ LLM real en producción (HU-06) |
-| O7 | Despliegue público gratuito | ✅ Hecho (HU-08): Render, plan gratuito, modo demo (https://normacita.onrender.com) |
+| O1 | Respuestas con citas numeradas al artículo/apartado y enlace al BOE | Hecho (HU-01, HU-03) |
+| O2 | No responder ni llamar al LLM cuando no hay base normativa | Hecho (HU-02) |
+| O3 | Corpus completo del REBT desde la fuente oficial | Hecho (HU-05): 29 artículos + 52 ITC-BT |
+| O4 | Calidad medible: tests y evaluación automática en CI | Hecho (HU-07): 57 tests, 52 preguntas |
+| O5 | Seguridad web y OWASP Top 10 para LLM | Controles base (HU-04, ADR-0004) |
+| O6 | Proveedor de IA intercambiable y modo demo sin claves | Hecho (ADR-0002); pendiente: LLM real en producción (HU-06) |
+| O7 | Despliegue público gratuito | Hecho (HU-08): Render, plan gratuito, modo demo (https://normacita.onrender.com) |
 
 ## 3. Análisis
 
 ### 3.1 Problema
 
-- Normas largas y modificadas: localizar el apartado exacto cuesta tiempo.
-- En obra, en una memoria técnica o estudiando hace falta **la referencia**, no solo la respuesta.
-- Los chats genéricos no garantizan la fuente y pueden inventarla.
+Las normas técnicas son largas y se van modificando, y localizar el apartado exacto cuesta. En obra, al redactar una memoria técnica o estudiando, lo que hace falta es la referencia, no solo la respuesta. Los chats genéricos no garantizan la fuente y a veces se la inventan.
 
 ### 3.2 Usuarios
 
@@ -86,16 +86,16 @@ Mi motivación viene de mi perfil profesional: estudié el ciclo superior de ASI
 
 | Id | Historia | Criterios de aceptación principales | Estado |
 |---|---|---|---|
-| HU-01 | Preguntar y obtener respuesta con citas | Cada marcador [n] corresponde a una cita devuelta; los marcadores inventados se eliminan; aviso de orientativo | ✅ |
-| HU-02 | No responder sin base | Pregunta ajena → `sin_base = true`, sin citas y sin llamada al LLM | ✅ |
-| HU-03 | Ver el texto literal de la fuente | Artículo, apartado, título, texto literal y enlace oficial (solo `https://`) | ✅ |
-| HU-04 | Entradas validadas y uso limitado | 3–500 caracteres (422), rate limit por IP (429), fallo del LLM → 502 genérico | ✅ |
-| HU-05 | Corpus REBT completo desde el BOE | Script de ingesta → JSON por apartado con la versión consolidada | ✅ |
-| HU-06 | Respuesta generada por un LLM real | Con `openai_compatible` y credenciales, respuesta con el prompt versionado y citas | ⏳ (implementado, sin probar en producción) |
-| HU-07 | Evaluación automática de calidad | ≥ 20 preguntas con artículo esperado; *hit@k* en CI con umbral | ✅ |
-| HU-08 | Despliegue público | URL en el README; `/health` 200; modo demo si no hay cuota | ✅ desplegado en Render (modo demo) |
+| HU-01 | Preguntar y obtener respuesta con citas | Cada marcador [n] corresponde a una cita devuelta; los marcadores inventados se eliminan; aviso de orientativo | Hecho |
+| HU-02 | No responder sin base | Pregunta ajena → `sin_base = true`, sin citas y sin llamada al LLM | Hecho |
+| HU-03 | Ver el texto literal de la fuente | Artículo, apartado, título, texto literal y enlace oficial (solo `https://`) | Hecho |
+| HU-04 | Entradas validadas y uso limitado | 3–500 caracteres (422), rate limit por IP (429), fallo del LLM → 502 genérico | Hecho |
+| HU-05 | Corpus REBT completo desde el BOE | Script de ingesta → JSON por apartado con la versión consolidada | Hecho |
+| HU-06 | Respuesta generada por un LLM real | Con `openai_compatible` y credenciales, respuesta con el prompt versionado y citas | Pendiente (implementado, sin probar en producción) |
+| HU-07 | Evaluación automática de calidad | ≥ 20 preguntas con artículo esperado; *hit@k* en CI con umbral | Hecho |
+| HU-08 | Despliegue público | URL en el README; `/health` 200; modo demo si no hay cuota | Hecho, desplegado en Render (modo demo) |
 
-Después del MVP: feedback 👍/👎 (HU-09), historial local (HU-10), búsqueda híbrida (HU-11), varias normas con filtro (HU-12), trazas LLMOps (HU-13), login de administrador (HU-14).
+Para después del MVP quedan: botones de feedback (HU-09), historial local (HU-10), búsqueda híbrida (HU-11), varias normas con filtro (HU-12), trazas LLMOps (HU-13), login de administrador (HU-14).
 
 ### 3.4 Requisitos no funcionales
 
@@ -105,7 +105,7 @@ Después del MVP: feedback 👍/👎 (HU-09), historial local (HU-10), búsqueda
 | RNF-02 | Seguridad web: CSP, nosniff, anti-clickjacking, render seguro | Tests de cabeceras y tests estáticos de la UI |
 | RNF-03 | OWASP LLM: LLM01, LLM05, LLM10 | Prompt con delimitadores, citas validadas, `max_tokens`, rate limit |
 | RNF-04 | Tests sin red ni claves; cobertura del núcleo ≥ 80 % | `pytest` en CI con proveedor fake (94 % actual) |
-| RNF-05 | Latencia p95 < 5 s con LLM real | ⏳ Pendiente de medir en el despliegue |
+| RNF-05 | Latencia p95 < 5 s con LLM real | Pendiente de medir en el despliegue |
 | RNF-06 | Arranca con un comando (local y Docker) | README §c y smoke test de Docker en CI |
 
 **Fuera de alcance:** asesoramiento profesional vinculante, normas autonómicas o privadas (UNE) con derechos de autor, apps móviles nativas y pagos.
@@ -114,7 +114,7 @@ Después del MVP: feedback 👍/👎 (HU-09), historial local (HU-10), búsqueda
 
 ### 4.1 Visión general
 
-Un **único servicio** (monolito modular) sirve la API y la interfaz web. El corpus es un JSON que se carga al arrancar. El LLM es opcional.
+Es un único servicio (un monolito modular) que sirve la API y la interfaz web. El corpus es un JSON que se carga al arrancar, y el LLM es opcional.
 
 <!-- diagrama: 01-contexto | Visión general del sistema -->
 ```mermaid
@@ -128,7 +128,7 @@ flowchart LR
 
 ### 4.2 Capas (arquitectura hexagonal)
 
-Las dependencias apuntan siempre hacia dentro: `domain` no importa nada, `application` depende solo de `domain` y de sus puertos, y la infraestructura implementa esos puertos. Por eso puedo cambiar de buscador o de proveedor de IA sin tocar el caso de uso, y los tests usan dobles sin red.
+Las dependencias siempre apuntan hacia dentro. `domain` no importa nada, `application` solo depende de `domain` y de sus puertos, y la infraestructura implementa esos puertos. Gracias a eso puedo cambiar de buscador o de proveedor de IA sin tocar el caso de uso, y los tests usan dobles que no necesitan red.
 
 <!-- diagrama: 02-capas | Capas de la arquitectura hexagonal -->
 ```mermaid
@@ -188,11 +188,11 @@ sequenceDiagram
 
 ### 4.4 Modelo de datos
 
-La unidad del corpus es el **fragmento**, que corresponde a un apartado de un artículo o a una sección de una ITC-BT. Campos: `id` (p. ej. `boe-a-2002-18099-a4-2`), `norma`, `articulo` («Artículo 4», «ITC-BT-10»), `apartado`, `titulo`, `texto` literal y `url` al BOE. Con esa granularidad la cita es precisa y el fragmento cabe holgado en el contexto del LLM. Los apartados largos se trocean por frases en partes de 2 500 caracteres como máximo.
+La unidad del corpus es el fragmento, que corresponde a un apartado de un artículo o a una sección de una ITC-BT. Sus campos son `id` (p. ej. `boe-a-2002-18099-a4-2`), `norma`, `articulo` («Artículo 4», «ITC-BT-10»), `apartado`, `titulo`, `texto` literal y `url` al BOE. Con ese tamaño la cita es precisa y el fragmento cabe de sobra en el contexto del LLM. Los apartados muy largos se parten por frases en trozos de 2 500 caracteres como máximo.
 
 ## 5. Decisiones técnicas
 
-Las decisiones importantes están documentadas como ADR en `docs/adr/`:
+Las decisiones importantes están en `docs/adr/` como ADR:
 
 | ADR | Decisión | Alternativas descartadas | Consecuencia principal |
 |---|---|---|---|
@@ -201,10 +201,11 @@ Las decisiones importantes están documentadas como ADR en `docs/adr/`:
 | 0003 | Recuperación léxica BM25 primero; híbrida solo si la evaluación lo justifica. Revisión v0.2: stemming, campo título, penalización de exclusiones, prior del articulado y umbral de cobertura | Embeddings + base vectorial desde el inicio | Determinista, gratis y medible; no entiende bien las paráfrasis |
 | 0004 | Controles de seguridad base OWASP Web/API + OWASP LLM Top 10 | — | Riesgos más probables cubiertos con poco código y tests |
 
-Otras decisiones relevantes:
+Hay otras dos decisiones sin ADR que conviene explicar.
 
-- **Ingesta en dos pasos** (XML crudo → JSON). El XML oficial se versiona en `data/raw/rebt/` (82 ficheros, 2,3 MB), así que el corpus se puede reconstruir y auditar sin red. Como desde mi entorno de desarrollo no se podía acceder a boe.es, la descarga se ejecuta en un workflow manual de GitHub Actions.
-- **Modo demo por defecto**, para que la URL pública funcione aunque se agote la cuota del LLM.
+La ingesta va en dos pasos, del XML crudo al JSON. El XML oficial está versionado en `data/raw/rebt/` (82 ficheros, 2,3 MB), así que el corpus se puede reconstruir y auditar sin conexión. La descarga se hace en un workflow manual de GitHub Actions porque desde el entorno en el que trabajaba el asistente no se llegaba a boe.es.
+
+La otra es que el modo demo está activado por defecto. Así la URL pública sigue funcionando aunque se acabe la cuota del LLM.
 
 ## 6. Implementación
 
@@ -220,7 +221,7 @@ Otras decisiones relevantes:
 | Infraestructura | Docker (usuario no root), GitHub Actions, Render (Blueprint) |
 | Datos | API de datos abiertos del BOE (XML) → JSON |
 
-Tamaño aproximado: ~960 líneas de Python en `src/`, ~550 de tests y ~540 de interfaz (HTML, CSS y JS).
+Es un proyecto pequeño: unas 960 líneas de Python en `src/`, unas 550 de tests y unas 540 de interfaz (HTML, CSS y JS).
 
 ### 6.2 Estructura del proyecto
 
@@ -244,7 +245,7 @@ normacita/
 
 ### 6.3 Ingesta del corpus
 
-`scripts/ingest_boe.py` tiene dos pasos. `descargar` obtiene el índice y cada bloque del texto consolidado. `construir` toma la última versión de cada bloque y la procesa así:
+`scripts/ingest_boe.py` funciona en dos pasos. `descargar` baja el índice y cada bloque del texto consolidado. `construir` coge la última versión de cada bloque y la procesa así:
 
 - linealiza las tablas en filas `celda | celda`;
 - descarta las notas editoriales;
@@ -252,49 +253,49 @@ normacita/
 - divide las ITC por las secciones de su propio índice, uniendo los encabezados sin contenido con su primera subsección;
 - titula las secciones de ITC con su contexto (p. ej. «Terminología · Aislamiento reforzado»).
 
-Resultado: **832 fragmentos** en `data/corpus/rebt.json` (1,1 MB), con la fuente y un aviso de uso orientativo.
+Al final salen 832 fragmentos en `data/corpus/rebt.json` (1,1 MB), con la fuente y un aviso de uso orientativo.
 
 ### 6.4 Recuperación (BM25) y decisión «sin base»
 
-`BM25Retriever` (k1 = 1,5, b = 0,75) puntúa dos campos: el texto y el título (artículo + título). Sobre esa base:
+`BM25Retriever` (k1 = 1,5, b = 0,75) puntúa dos campos, el texto y el título (artículo + título). Encima de eso hay varios ajustes:
 
-- **Normalización y stemming ligero en español:** quita tildes y stopwords (incluidas las palabras interrogativas) y aplica reglas para plurales, género, `-ación`, participios y verbos en `-uir`. Por ejemplo, `instalaciones/instalado → instal` y `excluyen/excluidas → exclu`.
-- **Cláusulas de exclusión:** los apartados que empiezan por «Se excluyen…» o «No se aplicará…» se penalizan (×0,5), salvo que la pregunta sea negativa, en cuyo caso se favorecen (×1,3).
-- **Prior del articulado:** ×1,2 al Real Decreto frente a las ITC.
-- **Cobertura:** fracción del peso IDF de la pregunta presente en el mejor fragmento. Las palabras ausentes del corpus cuentan con IDF máximo.
+- Normalización y un stemming ligero en español. Quita tildes y stopwords (también las palabras interrogativas) y aplica reglas para plurales, género, `-ación`, participios y verbos en `-uir`. Por ejemplo, `instalaciones/instalado → instal` y `excluyen/excluidas → exclu`.
+- Cláusulas de exclusión. Los apartados que empiezan por «Se excluyen…» o «No se aplicará…» se penalizan (×0,5), salvo que la pregunta sea negativa; en ese caso se favorecen (×1,3).
+- Prior del articulado: ×1,2 al Real Decreto frente a las ITC.
+- Cobertura: la fracción del peso IDF de la pregunta que aparece en el mejor fragmento. Las palabras que no están en el corpus cuentan con IDF máximo.
 
-`AskQuestion` devuelve «sin base» si el mejor fragmento no alcanza `RETRIEVAL_MIN_SCORE = 1,0` o `RETRIEVAL_MIN_COVERAGE = 0,3`. En ese caso no se llama al LLM. Si hay base, pasa los 4 primeros fragmentos (`RETRIEVAL_TOP_K = 4`).
+`AskQuestion` devuelve «sin base» si el mejor fragmento no llega a `RETRIEVAL_MIN_SCORE = 1,0` o a `RETRIEVAL_MIN_COVERAGE = 0,3`, y entonces no se llama al LLM. Si hay base, le pasa los 4 primeros fragmentos (`RETRIEVAL_TOP_K = 4`).
 
 ### 6.5 Proveedores de LLM
 
-- **`OpenAICompatibleProvider`**: `POST {LLM_BASE_URL}/chat/completions` con httpx, `max_tokens = 400` y *timeout* configurable (30 s por defecto). El prompt de sistema está versionado en código (`PROMPT_VERSION = "2026-10-06.v1"`) y le exige:
+- `OpenAICompatibleProvider` hace `POST {LLM_BASE_URL}/chat/completions` con httpx, `max_tokens = 400` y un *timeout* configurable (30 s por defecto). El prompt de sistema está versionado en el código (`PROMPT_VERSION = "2026-10-06.v1"`) y le pide al modelo:
   - responder solo con los fragmentos;
   - citar con [n];
   - decir si no puede responder;
   - tratar fragmentos y pregunta como datos;
   - responder en un máximo de 150 palabras;
   - recordar que la respuesta es orientativa.
-- **`FakeLLMProvider`**: respuesta extractiva determinista (primera frase del fragmento más relevante con su cita). Se usa en tests, en CI y en el modo demo.
-- Tras la generación, `AskQuestion` elimina los marcadores [n] que no corresponden a ningún fragmento (citas inventadas) y devuelve solo las citas usadas. Si el modelo no cita nada, muestra todos los fragmentos usados como contexto, para que se pueda verificar.
+- `FakeLLMProvider` da una respuesta extractiva y determinista: la primera frase del fragmento más relevante, con su cita. Es el que se usa en los tests, en el CI y en el modo demo.
+- Después de generar, `AskQuestion` quita los marcadores [n] que no corresponden a ningún fragmento (las citas inventadas) y devuelve solo las citas usadas. Si el modelo no cita nada, enseña todos los fragmentos que se usaron como contexto, para que se pueda comprobar.
 
 ### 6.6 Interfaz web
 
-HTML, CSS y JavaScript sin framework:
+Está hecha con HTML, CSS y JavaScript, sin framework. Tiene:
 
-- cabecera con la propuesta de valor e insignia «Modo demo» (cuando el proveedor es *fake*);
+- cabecera con la descripción de la herramienta e insignia «Modo demo» (cuando el proveedor es *fake*);
 - preguntas de ejemplo y contador de caracteres;
-- estado de carga;
+- indicador de carga;
 - respuesta con marcadores [n] y chips de cita que despliegan el texto literal y el enlace al BOE;
-- estados diferenciados de «Sin base en la norma» y de error;
+- mensajes distintos para «Sin base en la norma» y para los errores;
 - pie con el aviso de que no es asesoramiento profesional.
 
-Es responsive y accesible (etiquetas, ARIA, foco visible, navegación por teclado, contraste). Todo el contenido dinámico se inserta con `textContent`, y no hay scripts ni estilos en línea, así que es compatible con la CSP. Capturas en el [Anexo A](#anexo-a-capturas).
+Es responsive y accesible (etiquetas, ARIA, foco visible, navegación por teclado, contraste). Todo el contenido dinámico se mete con `textContent` y no hay scripts ni estilos en línea, así que encaja con la CSP. Las capturas están en el [Anexo A](#anexo-a-capturas).
 
 ## 7. Calidad: tests y evaluación
 
 ### 7.1 Tests
 
-**57 tests** con pytest, sin red ni claves (proveedor *fake*), con un **94 % de cobertura** del código Python. Cubren:
+Hay 57 tests con pytest. No necesitan red ni claves porque usan el proveedor *fake*, y cubren el 94 % del código Python. Por zonas:
 
 - dominio y caso de uso: umbral, cobertura, citas inventadas;
 - texto y BM25: stemming, regresiones de ámbito y exclusiones;
@@ -305,9 +306,9 @@ Es responsive y accesible (etiquetas, ARIA, foco visible, navegación por teclad
 
 ### 7.2 Evaluación de la recuperación
 
-Conjunto de **52 preguntas** (`eval/preguntas.json`): 42 con la cita esperada, escrita **leyendo el texto real del corpus** (un test comprueba que cada cita existe), y 10 fuera de ámbito, incluida una de inyección de prompt. Está dividido en un subconjunto de **ajuste** (30 + 7), usado para elegir parámetros, y otro de **validación** (12 + 3), escrito antes de medir.
+El conjunto de evaluación tiene 52 preguntas (`eval/preguntas.json`). 42 llevan la cita esperada, escrita leyendo el texto real del corpus (un test comprueba que cada cita existe), y 10 están fuera de ámbito, una de ellas un intento de inyección de prompt. Están repartidas en dos grupos: uno de ajuste (30 + 7), que es el que se usó para elegir los parámetros, y otro de validación (12 + 3), escrito antes de medir.
 
-Métricas: **hit@1** y **hit@3** (la cita esperada aparece en la primera posición o entre las tres primeras), **cobertura** (preguntas del corpus que sí se responden) y **acierto en negativas** (preguntas ajenas rechazadas).
+Mido cuatro cosas. hit@1 y hit@3 indican si la cita esperada sale la primera o entre las tres primeras. La cobertura es el porcentaje de preguntas del corpus que sí se responden, y el acierto en negativas, el de preguntas ajenas que se rechazan.
 
 | Métrica | Antes · BM25 básico | Después · BM25 mejorado |
 |---|---|---|
@@ -321,7 +322,7 @@ Métricas: **hit@1** y **hit@3** (la cita esperada aparece en la primera posici�
 
 *Mismo corpus (832 fragmentos) y mismas 52 preguntas antes y después. Fuente: `docs/EVALUACION.md`.*
 
-El caso que motivó la mejora fue «¿A qué instalaciones se aplica?». Antes no aparecía ningún apartado del artículo 2 entre los tres primeros. Ahora salen 2.3 → 2.1 → 2.2, y el 2.4 (exclusiones) cae al puesto 38. La pregunta inversa («¿Qué instalaciones quedan excluidas…?») devuelve el 2.4 primero.
+El caso que obligó a mejorar la búsqueda fue «¿A qué instalaciones se aplica?». Con el BM25 básico no aparecía ningún apartado del artículo 2 entre los tres primeros. Ahora salen el 2.3, el 2.1 y el 2.2, y el 2.4 (el de exclusiones) baja al puesto 38. La pregunta contraria, «¿Qué instalaciones quedan excluidas…?», devuelve el 2.4 el primero.
 
 El CI falla si alguna métrica total baja de su umbral: hit@1 ≥ 0,70, hit@3 ≥ 0,90, cobertura ≥ 0,95 y negativas ≥ 0,90.
 
@@ -338,9 +339,9 @@ El CI falla si alguna métrica total baja de su umbral: hit@1 ≥ 0,70, hit@3 �
 | Fuga de secretos | Claves solo por entorno (`repr=False`), errores 502 genéricos, `.env` fuera del repositorio, token de CI con `contents: read` |
 | Contenedor | Imagen `python:3.12-slim` con usuario sin privilegios |
 
-**IA responsable:** la herramienta es orientativa y lo dice en cada respuesta y en el pie. Solo usa texto oficial y público. Los planes gratuitos de algunos proveedores pueden usar las peticiones para entrenar, así que la app solo envía la pregunta y fragmentos del BOE, nunca datos personales.
+En cuanto a IA responsable, la herramienta es orientativa y lo dice en cada respuesta y en el pie de página. Solo trabaja con texto oficial y público. Los planes gratuitos de algunos proveedores pueden usar las peticiones para entrenar, por eso la app solo envía la pregunta y fragmentos del BOE, nunca datos personales.
 
-Pendiente (ADR-0004): escaneo de secretos (gitleaks), `pip-audit`/Dependabot, más tests adversarios de inyección, CORS restringido en producción y rate limit compartido si hay varias réplicas.
+Queda pendiente (lo recoge el ADR-0004): escaneo de secretos (gitleaks), `pip-audit`/Dependabot, más tests adversarios de inyección, CORS restringido en producción y un rate limit compartido si algún día hay varias réplicas.
 
 ## 9. CI/CD y despliegue
 
@@ -355,76 +356,70 @@ flowchart LR
     M[Workflow manual<br/>Ingesta BOE] -->|artefacto corpus-boe| Dev
 ```
 
-- **CI (GitHub Actions, `ci.yml`)**: en cada push y PR, el job `calidad-y-tests` ejecuta ruff y pytest (evaluación incluida). Después, el job `docker` construye la imagen y comprueba que el contenedor responde en `/health`.
-- **Ingesta (`ingest-boe.yml`)**: workflow manual que descarga el XML del BOE y publica el corpus como artefacto.
-- **Despliegue**: `render.yaml` (Blueprint) con un servicio web Docker en plan gratuito, health check `/health`, `LLM_PROVIDER=fake` por defecto y variables secretas con `sync: false`, que se rellenan en el panel. `DEPLOY.md` documenta paso a paso Render, la alternativa Fly.io (sin plan gratuito para cuentas nuevas) y cómo obtener una clave gratuita de Gemini, Groq u OpenRouter.
-- Limitaciones: la instancia gratuita de Render se duerme tras unos 15 min sin tráfico, y el rate limit en memoria se reinicia en cada despliegue.
+- CI (GitHub Actions, `ci.yml`). En cada push y en cada PR, el job `calidad-y-tests` pasa ruff y pytest, evaluación incluida. Luego el job `docker` construye la imagen y comprueba que el contenedor responde en `/health`.
+- Ingesta (`ingest-boe.yml`). Es un workflow manual que descarga el XML del BOE y publica el corpus como artefacto.
+- Despliegue. `render.yaml` (Blueprint) define un servicio web Docker en plan gratuito, con health check en `/health`, `LLM_PROVIDER=fake` por defecto y las variables secretas con `sync: false`, que se rellenan en el panel. En `DEPLOY.md` está el paso a paso de Render, la alternativa de Fly.io (que no tiene plan gratuito para cuentas nuevas) y cómo conseguir una clave gratuita de Gemini, Groq u OpenRouter.
+- Limitaciones: la instancia gratuita de Render se duerme tras unos 15 min sin tráfico, y el rate limit, que vive en memoria, se reinicia en cada despliegue.
 
-La demo pública está en https://normacita.onrender.com. Funciona en modo demo (proveedor *fake*: respuestas extractivas con sus citas). El proveedor compatible con OpenAI está implementado y se activa con variables de entorno, pero todavía no lo he probado en producción.
+La demo pública está en https://normacita.onrender.com y funciona en modo demo, con el proveedor *fake* devolviendo respuestas extractivas con sus citas. El proveedor compatible con OpenAI está implementado y se activa con variables de entorno, pero todavía no lo he probado en producción.
 
 ## 10. Uso de IA en el desarrollo
 
-He usado un asistente de IA (Grok Bot) durante el desarrollo y lo he registrado en `docs/REGISTRO-IA.md`. Le encargué:
+Durante el desarrollo he usado un asistente de IA (Grok Bot) y lo he ido apuntando en `docs/REGISTRO-IA.md`. No ha sido una ayuda puntual: buena parte del trabajo lo generó el asistente. Le encargué:
 
-- la elección razonada de la idea y la especificación;
+- el análisis razonado para elegir la idea y la especificación;
 - los ADR y el *walking skeleton* (API, BM25, proveedores, UI, tests, Docker y CI);
 - la ingesta completa desde el BOE (vía GitHub Actions);
 - el conjunto de evaluación y la mejora medida del BM25;
 - la preparación del despliegue, la mejora de la interfaz, los guiones y el deck de la presentación, esta memoria, y el guion y la captura de pantalla del vídeo de entrega (grabación real de la aplicación desplegada, el repositorio, los tests y el CI). La narración del vídeo es mi propia voz.
 
-Lo que funcionó para controlar el trabajo del asistente:
+**Mi papel.** Elegí la idea entre las candidatas y la validé, revisé el alcance y las decisiones de arquitectura (ADR) y comprobé lo que iba generando el asistente con los tests, el CI y la evaluación. No he dado nada por bueno sin comprobarlo. El código lo generó el asistente, y lo que me toca a mí es entenderlo y saber explicarlo. Por eso la documentación (ADR, evaluación y registro de IA) es parte del entregable. [PEDRO: añade un ejemplo concreto de algo del código o de los textos generados que revisaste y cambiaste, o que pediste rehacer, con el fichero si lo recuerdas.]
 
-- **Tests y evaluación como red de seguridad:** la evaluación detectó **sobreajuste**. Con un prior más fuerte para el articulado (×1,5), las preguntas de ajuste no empeoraban, pero el hit@1 de validación bajaba a 0,333; por eso se eligió ×1,2. También quedó documentado que esa elección miró la validación.
-- **Citas esperadas verificadas contra el texto real**, con un test que lo comprueba.
-- **Reglas para agentes** en `AGENTS.md` y decisiones en ADR.
+Para no perder el control de lo que generaba el asistente, lo que mejor me ha funcionado es tener tests y una evaluación automática desde el principio. Fue la evaluación la que detectó el sobreajuste que cuento más abajo. También ayudó que las citas esperadas estén comprobadas contra el texto real con un test, y tener por escrito las reglas para agentes (`AGENTS.md`) y las decisiones (ADR).
 
-**Mi papel.** Elegí y validé la idea entre las candidatas, revisé el alcance y las decisiones de arquitectura (ADR) y validé el trabajo del asistente con tests, el CI y la evaluación, en lugar de dar nada por bueno sin comprobarlo. El código lo generó el asistente; mi responsabilidad es entenderlo y poder explicarlo, y por eso la documentación (ADR, evaluación y registro de IA) forma parte del entregable.
+Problemas que aparecieron por el camino y cómo se vieron:
 
-**Problemas reales que aparecieron y cómo se detectaron:**
-
-- **Recuperación del artículo 2.** Con la muestra inicial del corpus, a «¿A qué instalaciones se aplica?» el apartado 2.4 (exclusiones) salía antes que el 2.1 (ámbito), y con el corpus completo ningún apartado del artículo 2 entraba en el top 3. Lo destapó la evaluación. Se corrigió con stemming, el campo título y la penalización de las cláusulas de exclusión, y los dos sentidos de la pregunta tienen test de regresión.
-- **El BOE no era accesible desde el entorno del asistente.** La descarga se llevó a un workflow manual de GitHub Actions, y el XML oficial se versiona en el repositorio para poder reconstruir y auditar el corpus sin red.
-- **Sobreajuste y honestidad de la evaluación.** El prior ×1,5 no empeoraba el subconjunto de ajuste, pero bajaba el hit@1 de validación a 0,333. Se eligió ×1,2 y quedó documentado que esa elección miró la validación, así que el 0,50 de hit@1 en validación no es una medida totalmente ciega.
-- **Conjunto de validación pequeño.** Son 12 preguntas con cita, y cada una pesa unos 8 puntos. Lo trato como una señal, no como una cifra definitiva.
+- La recuperación del artículo 2. Con la muestra inicial del corpus, a «¿A qué instalaciones se aplica?» salía antes el apartado 2.4 (exclusiones) que el 2.1 (ámbito). Con el corpus completo fue peor, porque ningún apartado del artículo 2 entraba en el top 3. Lo destapó la evaluación. Se corrigió con stemming, el campo título y la penalización de las cláusulas de exclusión, y las dos versiones de la pregunta tienen test de regresión.
+- Desde el entorno del asistente no se podía acceder al BOE. La descarga pasó a un workflow manual de GitHub Actions, y el XML oficial se guarda en el repositorio para poder reconstruir y auditar el corpus sin red.
+- El sobreajuste. Con un prior más fuerte para el articulado (×1,5) las preguntas de ajuste no empeoraban, pero el hit@1 de validación caía a 0,333. Se eligió ×1,2. Como esa elección miró la validación, lo dejé documentado: el 0,50 de hit@1 en validación no es una medida del todo ciega.
+- El conjunto de validación es pequeño. Son 12 preguntas con cita y cada una pesa unos 8 puntos, así que lo tomo como una señal y no como una cifra definitiva.
 
 ## 11. Resultados y limitaciones
 
-**Resultados:**
+Lo que hay ahora mismo:
 
-- Aplicación funcional de extremo a extremo con el REBT completo (29 artículos + 52 ITC-BT).
-- Respuestas con citas verificables y rechazo correcto del 100 % de las preguntas fuera de ámbito del conjunto de evaluación.
-- Recuperación: hit@3 0,952 en total y 0,917 en validación.
-- 57 tests, 94 % de cobertura y CI en verde con evaluación incluida.
-- Demo pública en Render (plan gratuito) en modo demo, con el proveedor *fake*: https://normacita.onrender.com.
+- Una aplicación que funciona de extremo a extremo con el REBT completo (29 artículos + 52 ITC-BT).
+- Respuestas con citas verificables, y el 100 % de las preguntas fuera de ámbito del conjunto de evaluación rechazadas.
+- En recuperación, hit@3 de 0,952 en total y de 0,917 en validación.
+- 57 tests, 94 % de cobertura y el CI en verde con la evaluación incluida.
+- La demo pública en Render (plan gratuito), en modo demo con el proveedor *fake*: https://normacita.onrender.com.
 
-**Limitaciones (honestas):**
+Y lo que no está tan bien:
 
-- **hit@1 de validación de 0,50:** solo la mitad de las preguntas nuevas tiene la cita correcta en primera posición. La mejora real está sobre todo en el top 3.
-- **Conjunto de evaluación pequeño:** 12 preguntas de validación, así que cada pregunta pesa unos 8 puntos.
-- **Negativas fáciles:** las preguntas fuera de ámbito son claramente ajenas (cocina, fútbol…). Faltan negativas cercanas (alta tensión, gas, normativa autonómica).
-- **Paráfrasis:** BM25 falla cuando la pregunta no comparte palabras con la norma. Por ejemplo, «¿Quién puede realizar las instalaciones eléctricas?» no recupera la cita esperada (art. 18.2 o 22.1). «¿Cómo se protege contra contactos directos?» tampoco.
-- **Sin LLM real en producción todavía:** la calidad de la redacción con un modelo real (fidelidad a las citas, latencia) no está medida (HU-06, RNF-05).
-- **Demo pública en modo demo y plan gratuito** (HU-08): está desplegada en Render, pero con el proveedor *fake*, así que responde con extractos literales y no redacta. Además, la instancia se duerme tras unos 15 min sin tráfico y la primera petición tarda en despertarla.
-- Rate limit en memoria (una instancia) y corpus estático: hay que relanzar la ingesta cuando el BOE consolide cambios.
+- El hit@1 de validación es 0,50. Dicho de otra forma, en las preguntas nuevas solo la mitad tiene la cita correcta en primera posición. Donde de verdad se nota la mejora es en el top 3.
+- El conjunto de evaluación es pequeño: 12 preguntas de validación, cada una pesa unos 8 puntos.
+- Las negativas son fáciles. Las preguntas fuera de ámbito son claramente ajenas (cocina, fútbol…) y faltan negativas cercanas, como alta tensión, gas o normativa autonómica.
+- BM25 falla con las paráfrasis, cuando la pregunta no comparte palabras con la norma. «¿Quién puede realizar las instalaciones eléctricas?» no recupera la cita esperada (art. 18.2 o 22.1), y «¿Cómo se protege contra contactos directos?» tampoco.
+- Todavía no hay un LLM real en producción, así que la calidad de la redacción con un modelo (fidelidad a las citas, latencia) está sin medir (HU-06, RNF-05).
+- La demo pública (HU-08) va con el proveedor *fake*: responde con extractos literales y no redacta. Además, en el plan gratuito la instancia se duerme tras unos 15 min sin tráfico y la primera petición tarda en despertarla.
+- El rate limit está en memoria (una sola instancia) y el corpus es estático, así que hay que relanzar la ingesta cuando el BOE consolide cambios.
 
 ## 12. Conclusiones y trabajo futuro
 
-**Conclusiones:**
+Si me quedo con una idea técnica, es que en un RAG lo que manda es la recuperación, y que solo se puede mejorar con criterio si se mide con preguntas reales y con un subconjunto de validación aparte. Sin la validación, el prior ×1,5 habría parecido una buena idea.
 
-- En un RAG lo crítico es la **recuperación**, y solo se puede mejorar con criterio si se **mide** con preguntas reales y un subconjunto de validación separado.
-- Un «no tengo base en la norma» bien diseñado es una funcionalidad, no un fallo: reduce el riesgo de desinformación y el coste.
-- La arquitectura hexagonal y el proveedor *fake* permitieron tener tests deterministas y CI sin secretos desde el primer día.
+El «Sin base en la norma» lo veo como una funcionalidad más. Evita respuestas inventadas y, de paso, se ahorra la llamada al modelo. Y la arquitectura hexagonal con el proveedor *fake* tuvo una ventaja muy práctica: tests deterministas y un CI sin secretos desde el primer día.
 
-A nivel personal, lo que más me llevo del máster aplicado a este proyecto es una forma de trabajar con IA: especificar primero, dejar las decisiones por escrito y no dar nada por bueno hasta que lo confirman los tests y la evaluación. El asistente acelera mucho la escritura de código, pero el criterio sobre qué medir, qué aceptar y qué contar con honestidad tiene que ser mío.
+Lo que más me llevo del máster, aplicado a este proyecto, es una forma de trabajar con IA. Especificar primero, dejar las decisiones por escrito y no dar nada por bueno hasta que lo confirman los tests y la evaluación. El asistente escribe código muy rápido, pero decidir qué se mide, qué se acepta y qué se cuenta tal cual me toca a mí. [PEDRO: cuenta qué harías distinto si empezaras el proyecto de nuevo; por ejemplo, algo que medirías antes o una decisión que cambiarías.]
 
 **Trabajo futuro** (ver `docs/ROADMAP.md`):
 
-1. Activar un LLM real gratuito en el despliegue de Render; medir latencia y fidelidad.
-2. Ampliar la evaluación: preguntas reales de profesionales y negativas cercanas; subir los umbrales del CI.
+1. Activar un LLM real gratuito en el despliegue de Render y medir latencia y fidelidad.
+2. Ampliar la evaluación con preguntas reales de profesionales y negativas cercanas, y subir los umbrales del CI.
 3. Búsqueda híbrida (BM25 + embeddings con fusión RRF) para las paráfrasis (HU-11).
-4. Feedback 👍/👎 (HU-09) y trazas LLMOps de latencia y tokens (HU-13).
+4. Botones de feedback (HU-09) y trazas LLMOps de latencia y tokens (HU-13).
 5. Más normas (CTE, RITE) con filtro por norma (HU-12) y actualización periódica del corpus.
-6. Seguridad: gitleaks, `pip-audit`/Dependabot y tests adversarios de inyección en CI.
+6. Seguridad: gitleaks, `pip-audit`/Dependabot y tests adversarios de inyección en el CI.
 
 ## Anexos
 
