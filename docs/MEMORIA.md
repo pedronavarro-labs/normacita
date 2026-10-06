@@ -47,7 +47,7 @@ Quienes trabajan con normativa técnica (instaladores, ingenieros, técnicos, es
 
 Elegí esta idea entre cinco candidatas con una tabla de criterios ponderados (originalidad, viabilidad en unas cuatro semanas, despliegue gratuito, valor medible de la IA, arquitectura, testabilidad, seguridad, CI/CD y encaje con mi perfil). Obtuvo la mayor puntuación (90 sobre 100; detalle en `DECISION.md` de la carpeta del TFM). Lo que más pesó es que **la IA aporta un valor que se puede medir** (la precisión de la cita) y que el «no respondo sin fuente» es una funcionalidad diferencial.
 
-Mi motivación viene de mi perfil de ingeniería. Sé lo que cuesta localizar, dentro de una norma técnica larga, el artículo o apartado exacto que respalda un requisito, y que esa referencia es la que hace falta para justificar una decisión. Quería una herramienta que ahorrase ese tiempo sin perder rigor: que no solo respondiera, sino que enseñara de dónde sale cada respuesta y que reconociera cuándo la norma no dice nada.
+Mi motivación viene de mi perfil profesional: estudié el ciclo superior de ASIR (Administración de Sistemas Informáticos en Red) y trabajo como analista de ciberseguridad. Estoy acostumbrado a consultar normativa y a justificar cada decisión con su referencia, y sé lo que cuesta localizar el apartado exacto dentro de un texto largo. Quería una herramienta que ahorrase ese tiempo sin perder rigor: que no solo respondiera, sino que enseñara de dónde sale cada respuesta y que reconociera cuándo la norma no dice nada. Ese mismo perfil explica el peso de la seguridad en el proyecto: al ser una aplicación pública que llama a un modelo de lenguaje, la diseñé siguiendo el OWASP Top 10 para LLM, con rechazo de la inyección de prompt y validación de las citas.
 
 ## 2. Objetivos
 
@@ -370,7 +370,7 @@ He usado un asistente de IA (Grok Bot) durante el desarrollo y lo he registrado 
 - los ADR y el *walking skeleton* (API, BM25, proveedores, UI, tests, Docker y CI);
 - la ingesta completa desde el BOE (vía GitHub Actions);
 - el conjunto de evaluación y la mejora medida del BM25;
-- la preparación del despliegue, la mejora de la interfaz, los guiones y el deck de la presentación, esta memoria y el vídeo de entrega (con voz sintética).
+- la preparación del despliegue, la mejora de la interfaz, los guiones y el deck de la presentación, esta memoria, y el guion y la captura de pantalla del vídeo de entrega (grabación real de la aplicación desplegada, el repositorio, los tests y el CI). La narración del vídeo es mi propia voz.
 
 Lo que funcionó para controlar el trabajo del asistente:
 
