@@ -47,9 +47,9 @@ Repo público, corpus completo, evaluación en CI, BM25 mejorado y despliegue pr
 ## Semana 4 · Documentación, presentación y entrega
 | Tarea | Fase | Checklist |
 |---|---|---|
-| ⏳ README final: 6 puntos (a–f), URLs de despliegue, slides y vídeo; capturas | 9 | F |
-| ⏳ Slides públicas: problema → solución → arquitectura → demo → IA → seguridad → aprendizajes (`plantilla/docs/presentacion/guion-slides.md`) | 10 | G |
-| ⏳ Vídeo con captura de pantalla (5-10 min) y enlace público | 10 | H |
+| 🟡 README: 6 puntos (a–f) y **capturas** ✅; ⏳ URLs de despliegue, slides y vídeo | 9 | F |
+| 🟡 Slides: **borrador** listo (`docs/presentacion/GUION-SLIDES.md` + `.pptx`, 12 slides con capturas). ⏳ 👤 Hazlas tuyas en Google Slides y publícalas | 10 | G |
+| 🟡 Vídeo: **guion borrador** (`docs/presentacion/GUION-VIDEO.md`, ~6:50 min). ⏳ 👤 Grabarlo con captura de pantalla y publicarlo | 10 | H |
 | ⏳ Prueba en incógnito de todos los enlaces; alguien ajeno sigue el README | 11 | F, G, H, I |
 | ⏳ Rellenar y **enviar tú** el Typeform de la lección «Proyecto Final» | 11 | I |
 

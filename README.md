@@ -6,8 +6,8 @@
 | Enlace | URL |
 |---|---|
 | 🌐 Demo desplegada | `PENDIENTE — https://…` (pasos en [DEPLOY.md](DEPLOY.md)) |
-| 📊 Slides (públicas) | `PENDIENTE — https://…` |
-| 🎬 Vídeo de presentación | `PENDIENTE — https://…` |
+| 📊 Slides (públicas) | `PENDIENTE — https://…` (borrador: [guion](docs/presentacion/GUION-SLIDES.md) · [.pptx](docs/presentacion/NormaCita-slides-BORRADOR.pptx)) |
+| 🎬 Vídeo de presentación | `PENDIENTE — https://…` (borrador del [guion](docs/presentacion/GUION-VIDEO.md)) |
 | 💻 Repositorio | https://github.com/pedronavarro-labs/normacita |
 
 ## a. Descripción general
