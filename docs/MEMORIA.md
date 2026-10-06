@@ -13,7 +13,7 @@
 | **Repositorio** | https://github.com/pedronavarro-labs/normacita |
 | **Demo desplegada** | https://normacita.onrender.com |
 | **Slides** | [Presentación en Google Slides](https://docs.google.com/presentation/d/1MjF4xRdwQZTHY_CifoflS_jd1IXDTmFeELU4AWkBwNs/edit?usp=sharing) |
-| **Vídeo** | {{URL_VIDEO}} |
+| **Vídeo** | https://github.com/pedronavarro-labs/normacita/releases/tag/tfm-demo-video |
 
 ## Resumen
 
@@ -478,4 +478,4 @@ Con un LLM real: `LLM_PROVIDER=openai_compatible`, `LLM_BASE_URL`, `LLM_API_KEY`
 | Fuente oficial (REBT consolidado) | https://www.boe.es/buscar/act.php?id=BOE-A-2002-18099 |
 | Demo | https://normacita.onrender.com |
 | Slides | [Presentación en Google Slides](https://docs.google.com/presentation/d/1MjF4xRdwQZTHY_CifoflS_jd1IXDTmFeELU4AWkBwNs/edit?usp=sharing) |
-| Vídeo | {{URL_VIDEO}} |
+| Vídeo | https://github.com/pedronavarro-labs/normacita/releases/tag/tfm-demo-video |

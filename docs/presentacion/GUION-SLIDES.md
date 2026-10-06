@@ -133,7 +133,7 @@
 **Contenido**
 - Repositorio: github.com/pedronavarro-labs/normacita
 - Demo: https://normacita.onrender.com
-- Vídeo: {{URL_VIDEO}}
+- Vídeo: https://github.com/pedronavarro-labs/normacita/releases/tag/tfm-demo-video
 - Fuente oficial: REBT consolidado, BOE-A-2002-18099
 - Herramienta orientativa: no es asesoramiento profesional
 
